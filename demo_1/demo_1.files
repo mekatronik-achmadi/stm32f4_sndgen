@@ -1,0 +1,7 @@
+chconf.h
+gui/gfxconf.h
+gui/main.c
+gui/usbcfg.c
+gui/usbcfg.h
+halconf.h
+mcuconf.h

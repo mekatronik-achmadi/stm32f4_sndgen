@@ -1,32 +1,3 @@
-/*
- * Copyright (c) 2012, 2013, Joel Bodenmann aka Tectu <joel@unormal.org>
- * Copyright (c) 2012, 2013, Andrew Hannam aka inmarket
- *
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *    * Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *    * Neither the name of the <organization> nor the
- *      names of its contributors may be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 #include "ch.h"
 #include "hal.h"
 
@@ -36,6 +7,8 @@
 
 #include "chprintf.h"
 #include "shell.h"
+
+#include "math.h"
 
 #include "usbcfg.h"
 
@@ -188,6 +161,43 @@ static const ShellConfig shell_cfg1 = {
 };
 
 /*===========================================================================*/
+/* Graph Example                                                             */
+/*===========================================================================*/
+
+static const point data[5] = {
+    { -40, -40 },
+    { 70, 40 },
+    { 140, 60 },
+    { 210, 60 },
+    { 280, 200 }
+};
+
+// The graph object
+static GGraphObject g;
+
+// A graph styling
+static GGraphStyle GraphStyle1 = {
+    { GGRAPH_POINT_DOT, 0, Blue },          // Point
+    { GGRAPH_LINE_NONE, 2, Gray },          // Line
+    { GGRAPH_LINE_SOLID, 0, White },        // X axis
+    { GGRAPH_LINE_SOLID, 0, White },        // Y axis
+    { GGRAPH_LINE_DASH, 5, Gray, 50 },      // X grid
+    { GGRAPH_LINE_DOT, 7, Yellow, 50 },     // Y grid
+    GWIN_GRAPH_STYLE_POSITIVE_AXIS_ARROWS   // Flags
+};
+
+// Another graph styling
+static const GGraphStyle GraphStyle2 = {
+    { GGRAPH_POINT_SQUARE, 5, Red },        // Point
+    { GGRAPH_LINE_DOT, 2, Pink },           // Line
+    { GGRAPH_LINE_SOLID, 0, White },        // X axis
+    { GGRAPH_LINE_SOLID, 0, White },        // Y axis
+    { GGRAPH_LINE_DASH, 5, Gray, 50 },      // X grid
+    { GGRAPH_LINE_DOT, 7, Yellow, 50 },     // Y grid
+    GWIN_GRAPH_STYLE_POSITIVE_AXIS_ARROWS   // Flags
+};
+
+/*===========================================================================*/
 /* Initialization and main thread.                                           */
 /*===========================================================================*/
 
@@ -196,22 +206,23 @@ static const ShellConfig shell_cfg1 = {
  */
 
 int main(void) {
-    coord_t		width, height;
-    coord_t		i, j;
+
+    GHandle     gh;
+    uint16_t    i;
 
     thread_t *shelltp = NULL;	
 
+    // ================================================================== //
+
     // Initialize and clear the display
     gfxInit();
-
-    //init pin
-    palSetPadMode(GPIOG,13,PAL_MODE_OUTPUT_PUSHPULL);
-    palSetPadMode(GPIOG,14,PAL_MODE_OUTPUT_PUSHPULL);
 
     /*
     * Shell manager initialization.
     */
     shellInit();
+
+    // ================================================================== //
 
     /*
     * Initializes a serial-over-USB CDC driver.
@@ -229,41 +240,78 @@ int main(void) {
     usbStart(serusbcfg.usbp, &usbcfg);
     usbConnectBus(serusbcfg.usbp);
 
+    // ================================================================== //
+
+    //Init LED pin
+    palSetPadMode(GPIOG,13,PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(GPIOG,14,PAL_MODE_OUTPUT_PUSHPULL);
+
     /*
     * Creating the blinker threads.
     */
-    chThdCreateStatic(waThread1, sizeof(waThread1),
-		NORMALPRIO + 10, Thread1, NULL);
-    chThdCreateStatic(waThread2, sizeof(waThread2),
-		NORMALPRIO + 10, Thread2, NULL);
+    chThdCreateStatic(waThread1, sizeof(waThread1),	NORMALPRIO + 10, Thread1, NULL);
+    chThdCreateStatic(waThread2, sizeof(waThread2),	NORMALPRIO + 10, Thread2, NULL);
 
-    // Get the screen size
-    width = gdispGetWidth();
-    height = gdispGetHeight();
+    // Create the graph window
+    {
+        GWindowInit wi;
 
-    // Code Here
-    gdispDrawBox(10, 10, width/2, height/2, Yellow);
-    gdispFillArea(width/2, height/2, width/2-10, height/2-10, Blue);
-    gdispDrawLine(5, 30, width-50, height-40, Red);
-    
-    for(i = 5, j = 0; i < width && j < height; i += 7, j += i/20)
-	gdispDrawPixel(i, j, White);
+        wi.show = TRUE;
+        wi.x = wi.y = 0;
+        wi.width = gdispGetWidth();
+        wi.height = gdispGetHeight();
+        gh = gwinGraphCreate(&g, &wi);
+    }
+
+    gdispSetOrientation(GDISP_ROTATE_90);
+
+    // ================================================================== //
+
+    // Set the graph origin and style
+    gwinGraphSetOrigin(gh, gwinGetWidth(gh)/2, gwinGetHeight(gh)/2);
+    gwinGraphSetStyle(gh, &GraphStyle1);
+    gwinGraphDrawAxis(gh);
+
+    // Draw a sine wave
+    for(i = 0; i < gwinGetWidth(gh); i++) {
+        gwinGraphDrawPoint(gh, i-gwinGetWidth(gh)/2, 80*sin(2*0.2*M_PI*i/180));
+    }
+
+    // ================================================================== //
+
+    // Modify the style
+    gwinGraphStartSet(gh);
+    GraphStyle1.point.color = Green;
+    gwinGraphSetStyle(gh, &GraphStyle1);
+
+    // Draw a different sine wave
+    for(i = 0; i < gwinGetWidth(gh)*5; i++) {
+        gwinGraphDrawPoint(gh, i/5-gwinGetWidth(gh)/2, 95*sin(2*0.2*M_PI*i/180));
+    }
+
+    // ================================================================== //
+    // Change to a completely different style
+    gwinGraphStartSet(gh);
+    gwinGraphSetStyle(gh, &GraphStyle2);
+
+    // Draw a set of points
+    gwinGraphDrawPoints(gh, data, sizeof(data)/sizeof(data[0]));
 
     while(TRUE) {
-	if (!shelltp) {
-	  if (SDU1.config->usbp->state == USB_ACTIVE) {
-	    /* Spawns a new shell.*/
-	    shelltp = shellCreate(&shell_cfg1, SHELL_WA_SIZE, NORMALPRIO);
-	  }
-	}
-	else {
-	  /* If the previous shell exited.*/
-	  if (chThdTerminatedX(shelltp)) {
-	    /* Recovers memory of the previous shell.*/
-	    chThdRelease(shelltp);
-	    shelltp = NULL;
-	  }
-	}
+        if (!shelltp) {
+          if (SDU1.config->usbp->state == USB_ACTIVE) {
+            /* Spawns a new shell.*/
+            shelltp = shellCreate(&shell_cfg1, SHELL_WA_SIZE, NORMALPRIO);
+          }
+        }
+        else {
+          /* If the previous shell exited.*/
+          if (chThdTerminatedX(shelltp)) {
+            /* Recovers memory of the previous shell.*/
+            chThdRelease(shelltp);
+            shelltp = NULL;
+          }
+        }
     
     	gfxSleepMilliseconds(500);
     }   

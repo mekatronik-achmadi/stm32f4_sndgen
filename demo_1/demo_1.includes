@@ -1,0 +1,8 @@
+.
+gui
+/opt/stm32lib/chibios30/os/rt/include
+/opt/stm32lib/chibios30/os/hal/include
+/opt/stm32lib/chibios30/os/various/
+/opt/stm32lib/chibios30/os/hal/lib/streams/
+/opt/stm32lib/chibios30/test/rt/
+/opt/ugfxlib/
