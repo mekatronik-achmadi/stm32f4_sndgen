@@ -9,6 +9,8 @@
 #include "shell.h"
 
 #include "math.h"
+#include "stdlib.h"
+#include "stdio.h"
 
 #include "usbcfg.h"
 
@@ -141,7 +143,7 @@ static void cmd_cpuload(BaseSequentialStream *chp, int argc, char *argv[]) {
   tmp2 = (uint16_t)(ch.kernel_stats.m_crit_isr.cumulative*10000/sum);
 
   chprintf(chp, "\r\n");
-  
+
   chprintf(chp, "thd:%u.%u%%   isr:%u.%u%%\r\n",
       tmp1/100, tmp1%100,tmp2/100, tmp2%100);
   chprintf(chp, "\r\n");
@@ -164,38 +166,104 @@ static const ShellConfig shell_cfg1 = {
 /* Graph Example                                                             */
 /*===========================================================================*/
 
-static const point data[5] = {
-    { -40, -40 },
-    { 70, 40 },
-    { 140, 60 },
-    { 210, 60 },
-    { 280, 200 }
-};
+// data array variable
+#define N_DATA 200
+#define DISP_DELAY 20
+#define LEFT_TO_RIGHT FALSE
+static point vdata[N_DATA];
 
 // The graph object
 static GGraphObject g;
 
 // A graph styling
-static GGraphStyle GraphStyle1 = {
-    { GGRAPH_POINT_DOT, 0, Blue },          // Point
-    { GGRAPH_LINE_NONE, 2, Gray },          // Line
-    { GGRAPH_LINE_SOLID, 0, White },        // X axis
-    { GGRAPH_LINE_SOLID, 0, White },        // Y axis
-    { GGRAPH_LINE_DASH, 5, Gray, 50 },      // X grid
-    { GGRAPH_LINE_DOT, 7, Yellow, 50 },     // Y grid
+static GGraphStyle GraphLine = {
+    { GGRAPH_POINT_DOT, 10, White },          // Point
+    { GGRAPH_LINE_SOLID, 10, White },          // Line
+    { GGRAPH_LINE_SOLID, 0, Gray },        // X axis
+    { GGRAPH_LINE_SOLID, 0, Gray },        // Y axis
+    { GGRAPH_LINE_DOT, 5, Gray, 50 },      // X grid
+    { GGRAPH_LINE_DOT, 5, Gray, 50 },     // Y grid
     GWIN_GRAPH_STYLE_POSITIVE_AXIS_ARROWS   // Flags
 };
 
-// Another graph styling
-static const GGraphStyle GraphStyle2 = {
-    { GGRAPH_POINT_SQUARE, 5, Red },        // Point
-    { GGRAPH_LINE_DOT, 2, Pink },           // Line
-    { GGRAPH_LINE_SOLID, 0, White },        // X axis
-    { GGRAPH_LINE_SOLID, 0, White },        // Y axis
-    { GGRAPH_LINE_DASH, 5, Gray, 50 },      // X grid
-    { GGRAPH_LINE_DOT, 7, Yellow, 50 },     // Y grid
-    GWIN_GRAPH_STYLE_POSITIVE_AXIS_ARROWS   // Flags
-};
+static THD_WORKING_AREA(waThread3, 128);
+static THD_FUNCTION(Thread3, arg) {
+
+  (void)arg;
+  u_int8_t n_rnd;
+  u_int16_t i;
+
+  chRegSetThreadName("dataupdate");
+
+  for(i=0;i<N_DATA;i++){
+     vdata[i].x = 2*i;
+     vdata[i].y = 0;
+  }
+
+#if LEFT_TO_RIGHT
+  while (true) {
+    for(i=0;i<N_DATA-1;i++){
+        vdata[i].y = vdata[i+1].y;
+    }
+
+    n_rnd = rand() % 10;
+    vdata[N_DATA-1].y = 10 * n_rnd;
+#else
+  while (true) {
+    for(i=N_DATA-1;i>0;i--){
+        vdata[i].y = vdata[i-1].y;
+    }
+
+    n_rnd = rand() % 10;
+    vdata[0].y = 10 * n_rnd;
+#endif
+
+    gfxSleepMilliseconds(50);
+  }
+}
+
+static THD_WORKING_AREA(waThread4, 128);
+static THD_FUNCTION(Thread4, arg) {
+
+    GHandle     gh;
+//    uint16_t    i;
+
+  (void)arg;
+  chRegSetThreadName("drawgraph");
+
+  // Create the graph window
+  {
+      GWindowInit wi;
+
+      wi.show = TRUE;
+      wi.x = wi.y = 0;
+      wi.width = gdispGetWidth();
+      wi.height = gdispGetHeight();
+      gh = gwinGraphCreate(&g, &wi);
+  }
+
+  // ================================================================== //
+
+  // Set the graph origin and style
+//  gwinGraphSetOrigin(gh, gwinGetWidth(gh)/2, gwinGetHeight(gh)/2);
+  gwinGraphSetOrigin(gh, 0, gwinGetHeight(gh)/2);
+  gwinGraphSetStyle(gh, &GraphLine);
+
+  while (true) {
+
+    gwinGraphStartSet(gh);
+    gwinGraphDrawAxis(gh);
+
+//    for(i = 0; i < N_DATA; i++) {
+//      gwinGraphDrawPoint(gh, vdata[i].x, vdata[i].y);
+//    }
+    gwinGraphDrawPoints(gh, vdata, sizeof(vdata)/sizeof(vdata[0]));
+
+    gfxSleepMilliseconds(DISP_DELAY);
+    gwinClear(gh);
+  }
+}
+
 
 /*===========================================================================*/
 /* Initialization and main thread.                                           */
@@ -207,15 +275,15 @@ static const GGraphStyle GraphStyle2 = {
 
 int main(void) {
 
-    GHandle     gh;
-    uint16_t    i;
-
-    thread_t *shelltp = NULL;	
+    thread_t *shelltp = NULL;
 
     // ================================================================== //
 
     // Initialize and clear the display
     gfxInit();
+
+    //rotate display
+    gdispSetOrientation(GDISP_ROTATE_90);
 
     /*
     * Shell manager initialization.
@@ -249,53 +317,14 @@ int main(void) {
     /*
     * Creating the blinker threads.
     */
-    chThdCreateStatic(waThread1, sizeof(waThread1),	NORMALPRIO + 10, Thread1, NULL);
-    chThdCreateStatic(waThread2, sizeof(waThread2),	NORMALPRIO + 10, Thread2, NULL);
-
-    // Create the graph window
-    {
-        GWindowInit wi;
-
-        wi.show = TRUE;
-        wi.x = wi.y = 0;
-        wi.width = gdispGetWidth();
-        wi.height = gdispGetHeight();
-        gh = gwinGraphCreate(&g, &wi);
-    }
-
-    gdispSetOrientation(GDISP_ROTATE_90);
-
-    // ================================================================== //
-
-    // Set the graph origin and style
-    gwinGraphSetOrigin(gh, gwinGetWidth(gh)/2, gwinGetHeight(gh)/2);
-    gwinGraphSetStyle(gh, &GraphStyle1);
-    gwinGraphDrawAxis(gh);
+    chThdCreateStatic(waThread1, sizeof(waThread1),	NORMALPRIO, Thread1, NULL);
+    chThdCreateStatic(waThread2, sizeof(waThread2),	NORMALPRIO, Thread2, NULL);
 
     // Draw a sine wave
-    for(i = 0; i < gwinGetWidth(gh); i++) {
-        gwinGraphDrawPoint(gh, i-gwinGetWidth(gh)/2, 80*sin(2*0.2*M_PI*i/180));
-    }
+    chThdCreateStatic(waThread3, sizeof(waThread3),	NORMALPRIO, Thread3, NULL);
+    chThdCreateStatic(waThread4, sizeof(waThread4),	NORMALPRIO, Thread4, NULL);
 
     // ================================================================== //
-
-    // Modify the style
-    gwinGraphStartSet(gh);
-    GraphStyle1.point.color = Green;
-    gwinGraphSetStyle(gh, &GraphStyle1);
-
-    // Draw a different sine wave
-    for(i = 0; i < gwinGetWidth(gh)*5; i++) {
-        gwinGraphDrawPoint(gh, i/5-gwinGetWidth(gh)/2, 95*sin(2*0.2*M_PI*i/180));
-    }
-
-    // ================================================================== //
-    // Change to a completely different style
-    gwinGraphStartSet(gh);
-    gwinGraphSetStyle(gh, &GraphStyle2);
-
-    // Draw a set of points
-    gwinGraphDrawPoints(gh, data, sizeof(data)/sizeof(data[0]));
 
     while(TRUE) {
         if (!shelltp) {
@@ -312,8 +341,8 @@ int main(void) {
             shelltp = NULL;
           }
         }
-    
+
     	gfxSleepMilliseconds(500);
-    }   
+    }
 }
 
