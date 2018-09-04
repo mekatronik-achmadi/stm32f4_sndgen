@@ -226,7 +226,7 @@ static THD_WORKING_AREA(waThread4, 128);
 static THD_FUNCTION(Thread4, arg) {
 
     GHandle     gh;
-//    uint16_t    i;
+    uint16_t    i;
 
   (void)arg;
   chRegSetThreadName("drawgraph");
@@ -238,7 +238,7 @@ static THD_FUNCTION(Thread4, arg) {
       wi.show = TRUE;
       wi.x = wi.y = 0;
       wi.width = gdispGetWidth();
-      wi.height = gdispGetHeight();
+      wi.height = gdispGetHeight()/2;
       gh = gwinGraphCreate(&g, &wi);
   }
 
@@ -249,18 +249,27 @@ static THD_FUNCTION(Thread4, arg) {
   gwinGraphSetOrigin(gh, 0, gwinGetHeight(gh)/2);
   gwinGraphSetStyle(gh, &GraphLine);
 
+/* FFT Test */
+  gwinGraphStartSet(gh);
+  gwinGraphDrawAxis(gh);
+
+    for(i = 0; i < gwinGetWidth(gh)*5*2; i++) {
+        gwinGraphDrawPoint(gh, i/5-gwinGetWidth(gh)/2, 20*sin(2*0.8*GFX_PI*i/180));
+    }
+
+
   while (true) {
 
-    gwinGraphStartSet(gh);
-    gwinGraphDrawAxis(gh);
+//    gwinGraphStartSet(gh);
+//    gwinGraphDrawAxis(gh);
 
-//    for(i = 0; i < N_DATA; i++) {
-//      gwinGraphDrawPoint(gh, vdata[i].x, vdata[i].y);
-//    }
-    gwinGraphDrawPoints(gh, vdata, sizeof(vdata)/sizeof(vdata[0]));
+////    for(i = 0; i < N_DATA; i++) {
+////      gwinGraphDrawPoint(gh, vdata[i].x, vdata[i].y);
+////    }
+//    gwinGraphDrawPoints(gh, vdata, sizeof(vdata)/sizeof(vdata[0]));
 
-    gfxSleepMilliseconds(DISP_DELAY);
-    gwinClear(gh);
+//    gfxSleepMilliseconds(DISP_DELAY);
+//    gwinClear(gh);
   }
 }
 
