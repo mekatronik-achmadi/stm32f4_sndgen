@@ -62,7 +62,7 @@ SRC      = 	$(TESTSRC) \
 			$(CHIBIOS)/os/various/syscalls.c
 
 OBJS     =
-DEFS     =
+DEFS     =	-DSTM32_PLLSAIN_VALUE=192 -DSTM32_PLLSAIQ_VALUE=7
 LIBS     =
 INCPATH  = 	$(TESTINC) \
 			$(CHIBIOS)/os/various \

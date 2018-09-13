@@ -17,11 +17,11 @@
 /*
  * Red LED blinker thread, times are in milliseconds.
  */
-static THD_WORKING_AREA(waThread1, 128);
-static THD_FUNCTION(Thread1, arg) {
+static THD_WORKING_AREA(waLed1, 128);
+static THD_FUNCTION(thdLed1, arg) {
 
   (void)arg;
-  chRegSetThreadName("blinker1");
+  chRegSetThreadName("led1");
   while (true) {
     palClearPad(GPIOG, 14);
     chThdSleepMilliseconds(500);
@@ -33,11 +33,11 @@ static THD_FUNCTION(Thread1, arg) {
 /*
  * Green LED blinker thread, times are in milliseconds.
  */
-static THD_WORKING_AREA(waThread2, 128);
-static THD_FUNCTION(Thread2, arg) {
+static THD_WORKING_AREA(waLed2, 128);
+static THD_FUNCTION(thdLed2, arg) {
 
   (void)arg;
-  chRegSetThreadName("blinker2");
+  chRegSetThreadName("led2");
   while (true) {
     palClearPad(GPIOG, 13);
     chThdSleepMilliseconds(250);
@@ -186,8 +186,8 @@ static GGraphStyle GraphLine = {
     GWIN_GRAPH_STYLE_POSITIVE_AXIS_ARROWS   // Flags
 };
 
-static THD_WORKING_AREA(waThread3, 128);
-static THD_FUNCTION(Thread3, arg) {
+static THD_WORKING_AREA(waGenData, 128);
+static THD_FUNCTION(thdGenData, arg) {
 
   (void)arg;
   u_int8_t n_rnd;
@@ -215,6 +215,7 @@ static THD_FUNCTION(Thread3, arg) {
     }
 
     n_rnd = rand() % 10;
+
     vdata[0].y = 10 * n_rnd;
 #endif
 
@@ -222,11 +223,11 @@ static THD_FUNCTION(Thread3, arg) {
   }
 }
 
-static THD_WORKING_AREA(waThread4, 128);
-static THD_FUNCTION(Thread4, arg) {
+static THD_WORKING_AREA(waDraw, 128);
+static THD_FUNCTION(thdDraw, arg) {
 
     GHandle     gh;
-    uint16_t    i;
+//    uint16_t    i;
 
   (void)arg;
   chRegSetThreadName("drawgraph");
@@ -242,37 +243,37 @@ static THD_FUNCTION(Thread4, arg) {
       gh = gwinGraphCreate(&g, &wi);
   }
 
-  // ================================================================== //
+// ================================================================== //
 
-  // Set the graph origin and style
 //  gwinGraphSetOrigin(gh, gwinGetWidth(gh)/2, gwinGetHeight(gh)/2);
   gwinGraphSetOrigin(gh, 0, gwinGetHeight(gh)/2);
   gwinGraphSetStyle(gh, &GraphLine);
 
 /* FFT Test */
-  gwinGraphStartSet(gh);
-  gwinGraphDrawAxis(gh);
+//  gwinGraphStartSet(gh);
+//  gwinGraphDrawAxis(gh);
 
-    for(i = 0; i < gwinGetWidth(gh)*5*2; i++) {
-        gwinGraphDrawPoint(gh, i/5-gwinGetWidth(gh)/2, 20*sin(2*0.8*GFX_PI*i/180));
-    }
+//    for(i = 0; i < gwinGetWidth(gh)*5*2; i++) {
+//        gwinGraphDrawPoint(gh, i/5-gwinGetWidth(gh)/2, 20*sin(2*0.8*GFX_PI*i/180));
+//    }
 
 
   while (true) {
 
-//    gwinGraphStartSet(gh);
-//    gwinGraphDrawAxis(gh);
+    gwinGraphStartSet(gh);
+    gwinGraphDrawAxis(gh);
 
-////    for(i = 0; i < N_DATA; i++) {
-////      gwinGraphDrawPoint(gh, vdata[i].x, vdata[i].y);
-////    }
-//    gwinGraphDrawPoints(gh, vdata, sizeof(vdata)/sizeof(vdata[0]));
+//    for(i = 0; i < N_DATA; i++) {
+//      gwinGraphDrawPoint(gh, vdata[i].x, vdata[i].y);
+//    }
+    gwinGraphDrawPoints(gh, vdata, sizeof(vdata)/sizeof(vdata[0]));
 
-//    gfxSleepMilliseconds(DISP_DELAY);
-//    gwinClear(gh);
+// ================================================================== //
+
+    gfxSleepMilliseconds(DISP_DELAY);
+    gwinClear(gh);
   }
 }
-
 
 /*===========================================================================*/
 /* Initialization and main thread.                                           */
@@ -326,12 +327,12 @@ int main(void) {
     /*
     * Creating the blinker threads.
     */
-    chThdCreateStatic(waThread1, sizeof(waThread1),	NORMALPRIO, Thread1, NULL);
-    chThdCreateStatic(waThread2, sizeof(waThread2),	NORMALPRIO, Thread2, NULL);
+    chThdCreateStatic(waLed1, sizeof(waLed1),	NORMALPRIO, thdLed1, NULL);
+    chThdCreateStatic(waLed2, sizeof(waLed2),	NORMALPRIO, thdLed2, NULL);
 
     // Draw a sine wave
-    chThdCreateStatic(waThread3, sizeof(waThread3),	NORMALPRIO, Thread3, NULL);
-    chThdCreateStatic(waThread4, sizeof(waThread4),	NORMALPRIO, Thread4, NULL);
+    chThdCreateStatic(waGenData, sizeof(waGenData),	NORMALPRIO, thdGenData, NULL);
+    chThdCreateStatic(waDraw, sizeof(waDraw),	NORMALPRIO, thdDraw, NULL);
 
     // ================================================================== //
 

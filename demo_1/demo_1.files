@@ -1,3 +1,4 @@
+Makefile
 chconf.h
 gui/gfxconf.h
 gui/main.c
