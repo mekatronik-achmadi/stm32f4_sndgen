@@ -46,12 +46,19 @@
 /* Features for the GDISP sub-system. */
 #define GDISP_NEED_VALIDATION	TRUE
 #define GDISP_NEED_CLIP			TRUE
+#define GDISP_NEED_TEXT			TRUE
 #define GDISP_NEED_MULTITHREAD	TRUE
 #define GDISP_NEED_CONTROL      TRUE
+#define GDISP_INCLUDE_FONT_UI2	TRUE
 
 /* Features for the GWIN subsystem. */
 #define GWIN_NEED_WINDOWMANAGER	TRUE
 #define GWIN_NEED_GRAPH			TRUE
+#define GWIN_NEED_CONSOLE		TRUE
+    #define GWIN_CONSOLE_ESCSEQ             TRUE
+    #define GWIN_CONSOLE_USE_HISTORY        TRUE
+    #define GWIN_CONSOLE_HISTORY_AVERAGING	TRUE
+    #define GWIN_CONSOLE_HISTORY_ATCREATE	TRUE
 
 /* Features for the GQUEUE subsystem. */
 #define GQUEUE_NEED_ASYNC       TRUE

@@ -14,9 +14,6 @@
 
 #include "usbcfg.h"
 
-/*
- * Red LED blinker thread, times are in milliseconds.
- */
 static THD_WORKING_AREA(waLed1, 128);
 static THD_FUNCTION(thdLed1, arg) {
 
@@ -30,9 +27,6 @@ static THD_FUNCTION(thdLed1, arg) {
   }
 }
 
-/*
- * Green LED blinker thread, times are in milliseconds.
- */
 static THD_WORKING_AREA(waLed2, 128);
 static THD_FUNCTION(thdLed2, arg) {
 
@@ -163,28 +157,13 @@ static const ShellConfig shell_cfg1 = {
 };
 
 /*===========================================================================*/
-/* Graph Example                                                             */
+/* GRAPH PART                                                                */
 /*===========================================================================*/
 
-// data array variable
 #define N_DATA 200
 #define DISP_DELAY 20
 #define LEFT_TO_RIGHT FALSE
 static point vdata[N_DATA];
-
-// The graph object
-static GGraphObject g;
-
-// A graph styling
-static GGraphStyle GraphLine = {
-    { GGRAPH_POINT_DOT, 10, White },          // Point
-    { GGRAPH_LINE_SOLID, 10, White },          // Line
-    { GGRAPH_LINE_SOLID, 0, Gray },        // X axis
-    { GGRAPH_LINE_SOLID, 0, Gray },        // Y axis
-    { GGRAPH_LINE_DOT, 5, Gray, 50 },      // X grid
-    { GGRAPH_LINE_DOT, 5, Gray, 50 },     // Y grid
-    GWIN_GRAPH_STYLE_POSITIVE_AXIS_ARROWS   // Flags
-};
 
 static THD_WORKING_AREA(waGenData, 128);
 static THD_FUNCTION(thdGenData, arg) {
@@ -223,55 +202,84 @@ static THD_FUNCTION(thdGenData, arg) {
   }
 }
 
-static THD_WORKING_AREA(waDraw, 128);
+static GGraphObject g;
+
+static GGraphStyle GraphLine = {
+    { GGRAPH_POINT_DOT, 10, White },          // Point
+    { GGRAPH_LINE_SOLID, 10, White },          // Line
+    { GGRAPH_LINE_SOLID, 0, Gray },        // X axis
+    { GGRAPH_LINE_SOLID, 0, Gray },        // Y axis
+    { GGRAPH_LINE_DOT, 5, Gray, 50 },      // X grid
+    { GGRAPH_LINE_DOT, 5, Gray, 50 },     // Y grid
+    GWIN_GRAPH_STYLE_POSITIVE_AXIS_ARROWS   // Flags
+};
+
+static THD_WORKING_AREA(waDraw, 256);
 static THD_FUNCTION(thdDraw, arg) {
 
-    GHandle     gh;
+    GHandle     gh,gc;
+    font_t	    gfont;
 //    uint16_t    i;
 
-  (void)arg;
-  chRegSetThreadName("drawgraph");
+    (void)arg;
+    chRegSetThreadName("drawgraph");
 
-  // Create the graph window
-  {
+    gfont = gdispOpenFont("UI2");
+    gwinSetDefaultFont(gfont);
+
+    {
       GWindowInit wi;
+      gwinClearInit(&wi);
 
       wi.show = TRUE;
-      wi.x = wi.y = 0;
+
+      wi.x = 0;
+      wi.y = 0;
       wi.width = gdispGetWidth();
       wi.height = gdispGetHeight()/2;
       gh = gwinGraphCreate(&g, &wi);
-  }
 
-// ================================================================== //
+      wi.x = 0;
+      wi.y = gdispGetHeight()/2;;
+      wi.width = gdispGetWidth();
+      wi.height = gdispGetHeight()/8;
 
-//  gwinGraphSetOrigin(gh, gwinGetWidth(gh)/2, gwinGetHeight(gh)/2);
+      gc = gwinConsoleCreate(0, &wi);
+
+    }
+
   gwinGraphSetOrigin(gh, 0, gwinGetHeight(gh)/2);
   gwinGraphSetStyle(gh, &GraphLine);
 
-/* FFT Test */
-//  gwinGraphStartSet(gh);
-//  gwinGraphDrawAxis(gh);
+//  gwinClear(gc);
+
+// ================================================================== //
+
+//    gwinGraphStartSet(gh);
+//    gwinGraphDrawAxis(gh);
 
 //    for(i = 0; i < gwinGetWidth(gh)*5*2; i++) {
 //        gwinGraphDrawPoint(gh, i/5-gwinGetWidth(gh)/2, 20*sin(2*0.8*GFX_PI*i/180));
 //    }
+//    while(1);
 
 
   while (true) {
+    gwinPrintf(gc, "Function: Random Number \n");
 
     gwinGraphStartSet(gh);
     gwinGraphDrawAxis(gh);
+    gwinGraphDrawPoints(gh, vdata, sizeof(vdata)/sizeof(vdata[0]));
 
 //    for(i = 0; i < N_DATA; i++) {
 //      gwinGraphDrawPoint(gh, vdata[i].x, vdata[i].y);
 //    }
-    gwinGraphDrawPoints(gh, vdata, sizeof(vdata)/sizeof(vdata[0]));
 
 // ================================================================== //
 
     gfxSleepMilliseconds(DISP_DELAY);
     gwinClear(gh);
+    gwinClear(gc);
   }
 }
 
