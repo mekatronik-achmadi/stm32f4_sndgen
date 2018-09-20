@@ -162,6 +162,7 @@ static const ShellConfig shell_cfg1 = {
 
 #define N_DATA 200
 #define DISP_DELAY 20
+#define PLAY_DELAY 500
 #define LEFT_TO_RIGHT FALSE
 static point vdata[N_DATA];
 
@@ -214,12 +215,27 @@ static GGraphStyle GraphLine = {
     GWIN_GRAPH_STYLE_POSITIVE_AXIS_ARROWS   // Flags
 };
 
+#define DURATION 10
+u_int8_t play_stt;
+u_int16_t play_dur;
+static THD_WORKING_AREA(waPlay, 256);
+static THD_FUNCTION(thdPlay, arg) {
+    (void)arg;
+    chRegSetThreadName("playduration");
+
+    while(true){
+        if(play_stt == 1){
+            play_dur++;
+        }
+        gfxSleepMilliseconds(PLAY_DELAY);
+    }
+}
+
 static THD_WORKING_AREA(waDraw, 256);
 static THD_FUNCTION(thdDraw, arg) {
 
     GHandle     gh,gc;
     font_t	    gfont;
-//    uint16_t    i;
 
     (void)arg;
     chRegSetThreadName("drawgraph");
@@ -242,17 +258,20 @@ static THD_FUNCTION(thdDraw, arg) {
       wi.x = 0;
       wi.y = gdispGetHeight()/2;;
       wi.width = gdispGetWidth();
-      wi.height = gdispGetHeight()/8;
+      wi.height = gdispGetHeight()/2;
 
       gc = gwinConsoleCreate(0, &wi);
 
     }
 
-  gwinGraphSetOrigin(gh, 0, gwinGetHeight(gh)/2);
+  gwinGraphSetOrigin(gh, 0, 0);
   gwinGraphSetStyle(gh, &GraphLine);
 
-  /*
-    gwinClear(gc);
+  gwinClear(gc);
+  gwinPrintf(gc, "System ready \n");
+
+/*
+    uint16_t    i;
 
     gwinGraphStartSet(gh);
     gwinGraphDrawAxis(gh);
@@ -264,6 +283,7 @@ static THD_FUNCTION(thdDraw, arg) {
 */
 
 /*
+    uint16_t    i;
     while(true){
         for(i = 0; i < N_DATA; i++) {
             gwinGraphDrawPoint(gh, vdata[i].x, vdata[i].y);
@@ -271,6 +291,7 @@ static THD_FUNCTION(thdDraw, arg) {
     }
 */
 
+/*
   while (true) {
     gwinPrintf(gc, "Function: Random Number \n");
 
@@ -282,7 +303,36 @@ static THD_FUNCTION(thdDraw, arg) {
     gwinClear(gh);
     gwinClear(gc);
   }
+*/
 
+  while(true){
+        if(palReadPad(GPIOA,0)){
+            if(play_stt == 0){
+                play_stt = 1;
+                play_dur = 0;
+
+                gwinPrintf(gc, "Function: Random Number \n");
+                gwinPrintf(gc, "Start to Play \n");
+            }
+        }
+
+        gwinClear(gh);
+        if(play_stt == 1){
+
+            gwinGraphStartSet(gh);
+            gwinGraphDrawAxis(gh);
+            gwinGraphDrawPoints(gh, vdata, sizeof(vdata)/sizeof(vdata[0]));
+        }
+
+        if(play_dur >= DURATION){
+            if(play_stt == 1){
+                play_stt = 0;
+                gwinPrintf(gc, "Playing is over \n");
+            }
+        }
+
+        gfxSleepMilliseconds(DISP_DELAY);
+  }
 }
 
 /*===========================================================================*/
@@ -333,6 +383,7 @@ int main(void) {
     //Init LED pin
     palSetPadMode(GPIOG,13,PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(GPIOG,14,PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(GPIOA, 0,PAL_MODE_INPUT_PULLDOWN);
 
     /*
     * Creating the blinker threads.
@@ -343,6 +394,7 @@ int main(void) {
     // Draw a sine wave
     chThdCreateStatic(waGenData, sizeof(waGenData),	NORMALPRIO, thdGenData, NULL);
     chThdCreateStatic(waDraw, sizeof(waDraw),	NORMALPRIO, thdDraw, NULL);
+    chThdCreateStatic(waPlay, sizeof(waPlay),	NORMALPRIO, thdPlay, NULL);
 
     // ================================================================== //
 
