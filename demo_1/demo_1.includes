@@ -6,3 +6,4 @@ gui
 /opt/stm32lib/chibios30/os/hal/lib/streams/
 /opt/stm32lib/chibios30/test/rt/
 /opt/ugfxlib/
+main
