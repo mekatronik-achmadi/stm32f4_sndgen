@@ -7,3 +7,4 @@ gui
 /opt/stm32lib/chibios30/test/rt/
 /opt/ugfxlib/
 main
+main/dac

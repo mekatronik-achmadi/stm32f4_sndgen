@@ -1,6 +1,8 @@
 Makefile
 chconf.h
 halconf.h
+main/dac/mcp4725.c
+main/dac/mcp4725.h
 main/m_data.c
 main/m_data.h
 main/m_gui.c

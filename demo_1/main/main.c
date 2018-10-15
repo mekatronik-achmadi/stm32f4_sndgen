@@ -16,6 +16,8 @@
 #include "m_data.h"
 #include "m_gui.h"
 
+#include "dac/mcp4725.h"
+
 /*===========================================================================*/
 /* LED PART                                                                  */
 /*===========================================================================*/
@@ -67,6 +69,8 @@ int main(void) {
     m_shell_start();
     m_datagen_start();
     m_gui_start();
+
+    m_dac_start();
 
     while(true) {
         m_shell_setup();

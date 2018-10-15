@@ -35,8 +35,10 @@ ifeq ($(OPT_OS),chibios)
 endif
 
 DEMODIR = ./main
-GFXINC +=   $(DEMODIR)
+GFXINC +=   $(DEMODIR) \
+            $(DEMODIR)/dac
 GFXSRC +=   $(DEMODIR)/main.c \
+            $(DEMODIR)/dac/mcp4725.c \
             $(DEMODIR)/usbcfg.c \
             $(DEMODIR)/m_shell.c \
             $(DEMODIR)/m_data.c \

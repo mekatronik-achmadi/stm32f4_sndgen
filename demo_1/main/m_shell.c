@@ -1,4 +1,5 @@
 #include "m_shell.h"
+#include "dac/mcp4725.h"
 
 extern u_int8_t play_stt;
 extern u_int16_t play_dur;
@@ -124,6 +125,22 @@ static void cmd_play(BaseSequentialStream *chp, int argc, char *argv[]) {
     }
 }
 
+static void cmd_setv(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void) chp;
+    u_int16_t v_dac;
+    char txt_i2c[16];
+
+    if(argc!=1){
+        return;
+    }
+
+    v_dac = atoi(argv[0]);
+
+    m_dac_setV(v_dac);
+    chsnprintf(txt_i2c,16,"DAC = %4i\n",v_dac);
+    gwinPrintf(gc, txt_i2c);
+}
+
 /*===========================================================================*/
 /* Command line serial usb                                                   */
 /*===========================================================================*/
@@ -134,6 +151,7 @@ static const ShellCommand commands[] = {
   {"test", cmd_test},
   {"cpu", cmd_cpuload},
   {"play",cmd_play},
+  {"setv",cmd_setv},
   {NULL, NULL}
 };
 
