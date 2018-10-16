@@ -35,25 +35,12 @@ static THD_FUNCTION(thdLed1, arg) {
   }
 }
 
-static THD_WORKING_AREA(waLed2, 128);
-static THD_FUNCTION(thdLed2, arg) {
-
-  (void)arg;
-  chRegSetThreadName("led2");
-  while (true) {
-    palClearPad(GPIOG, 13);
-    chThdSleepMilliseconds(250);
-    palSetPad(GPIOG, 13);
-    chThdSleepMilliseconds(250);
-  }
-}
-
 static void m_led_start(void){
-    palSetPadMode(GPIOG,13,PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(GPIOG,14,PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(GPIOG,13,PAL_MODE_OUTPUT_PUSHPULL);
+    palClearPad(GPIOG,13);
 
     chThdCreateStatic(waLed1, sizeof(waLed1),	NORMALPRIO, thdLed1, NULL);
-    chThdCreateStatic(waLed2, sizeof(waLed2),	NORMALPRIO, thdLed2, NULL);
 }
 
 /*===========================================================================*/

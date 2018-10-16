@@ -13,11 +13,17 @@
 #include "stdlib.h"
 #include "stdio.h"
 
-#define N_DATA 200
+#include "wave/m_sine.h"
+#include "dac/mcp4725.h"
+
+#define N_DATA DATASIZE
 #define DURATION 20
 #define PLAY_DELAY 500
 #define LEFT_TO_RIGHT FALSE
+#define GRAPH_SCALE 0.04
 
 void m_datagen_start(void);
+void m_data_shift(void);
+void m_data_zero(void);
 
 #endif // M_DATA_H

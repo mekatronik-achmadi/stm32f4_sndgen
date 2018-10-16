@@ -4,6 +4,7 @@
 extern point vdata[N_DATA];
 extern u_int8_t play_stt;
 extern u_int16_t play_dur;
+extern u_int16_t dat_i;
 
 static GGraphObject g;
 
@@ -43,13 +44,13 @@ static THD_FUNCTION(thdDraw, arg) {
       wi.x = 0;
       wi.y = 0;
       wi.width = gdispGetWidth();
-      wi.height = gdispGetHeight()/2;
+      wi.height = 3*(gdispGetHeight()/4);
       gh = gwinGraphCreate(&g, &wi);
 
       wi.x = 0;
-      wi.y = gdispGetHeight()/2;;
+      wi.y = 3*(gdispGetHeight()/4);
       wi.width = gdispGetWidth();
-      wi.height = gdispGetHeight()/2;
+      wi.height = gdispGetHeight()/4;
 
       gc = gwinConsoleCreate(0, &wi);
 
@@ -100,9 +101,16 @@ static THD_FUNCTION(thdDraw, arg) {
   while(true){
         if(palReadPad(GPIOA,0)){
             if(play_stt == 0){
+
+                dat_i = 0;
+                m_dac_setV(0);
+                m_data_zero();
+
                 play_stt = 1;
                 play_dur = 0;
+                palClearPad(GPIOG,13);
 
+                gwinClear(gc);
                 gwinPrintf(gc, "Function: Random Number \n");
                 gwinPrintf(gc, "Start to Play \n");
             }
@@ -114,11 +122,19 @@ static THD_FUNCTION(thdDraw, arg) {
             gwinGraphStartSet(gh);
             gwinGraphDrawAxis(gh);
             gwinGraphDrawPoints(gh, vdata, sizeof(vdata)/sizeof(vdata[0]));
+
+            palTogglePad(GPIOG,13);
         }
 
         if(play_dur >= DURATION){
             if(play_stt == 1){
+
                 play_stt = 0;
+                dat_i = 0;
+                m_data_zero();
+                m_dac_setV(0);
+
+                palClearPad(GPIOG,13);
                 gwinPrintf(gc, "Playing is over \n");
             }
         }

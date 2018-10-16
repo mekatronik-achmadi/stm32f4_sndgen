@@ -36,9 +36,11 @@ endif
 
 DEMODIR = ./main
 GFXINC +=   $(DEMODIR) \
-            $(DEMODIR)/dac
+            $(DEMODIR)/dac \
+            $(DEMODIR)/wave
 GFXSRC +=   $(DEMODIR)/main.c \
             $(DEMODIR)/dac/mcp4725.c \
+            $(DEMODIR)/wave/m_sine.c \
             $(DEMODIR)/usbcfg.c \
             $(DEMODIR)/m_shell.c \
             $(DEMODIR)/m_data.c \
