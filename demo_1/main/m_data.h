@@ -16,10 +16,10 @@
 #include "wave/m_sine.h"
 #include "dac/mcp4725.h"
 
-#define N_DATA DATASIZE
+#define N_DISPDATA 320
 #define DURATION 20
 #define PLAY_DELAY 500
-#define LEFT_TO_RIGHT FALSE
+#define LEFT_TO_RIGHT TRUE
 #define GRAPH_SCALE 0.04
 
 void m_datagen_start(void);

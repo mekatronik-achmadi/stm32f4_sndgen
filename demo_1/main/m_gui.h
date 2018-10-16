@@ -13,7 +13,7 @@
 #include "stdlib.h"
 #include "stdio.h"
 
-#define DISP_DELAY 20
+#define DISP_DELAY 10
 #define DRAW_MODE 3
 
 void m_gui_start(void);

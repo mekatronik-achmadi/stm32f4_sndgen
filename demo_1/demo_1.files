@@ -5,6 +5,8 @@ main/dac/mcp4725.c
 main/dac/mcp4725.h
 main/m_data.c
 main/m_data.h
+main/m_exti.c
+main/m_exti.h
 main/m_gui.c
 main/m_gui.h
 main/m_shell.c

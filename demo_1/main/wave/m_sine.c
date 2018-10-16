@@ -1,5 +1,18 @@
 #include "m_sine.h"
 
+u_int16_t dac_tri[DATATRISIZE];
+
+void m_dac_triangular(void){
+    u_int16_t i;
+
+    for(i=0; i <4095; i++){
+        dac_tri[i] = i;
+    }
+    for(i=4095; i>0;i--){
+        dac_tri[8192-i] = i;
+    }
+}
+
 #if WAVE_SINE_8BIT
 const u_int16_t dac_sine[DATASIZE] = {
     2048, 2098, 2148, 2198, 2248, 2298, 2348, 2398,

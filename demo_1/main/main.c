@@ -15,8 +15,11 @@
 #include "m_shell.h"
 #include "m_data.h"
 #include "m_gui.h"
+#include "m_exti.h"
 
 #include "dac/mcp4725.h"
+
+extern GHandle gc;
 
 /*===========================================================================*/
 /* LED PART                                                                  */
@@ -58,6 +61,10 @@ int main(void) {
     m_gui_start();
 
     m_dac_start();
+
+    m_exti_start();
+
+    gwinPrintf(gc, "System ready \n");
 
     while(true) {
         m_shell_setup();

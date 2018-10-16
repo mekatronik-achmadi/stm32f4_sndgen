@@ -3,7 +3,8 @@
 
 extern u_int8_t play_stt;
 extern u_int16_t play_dur;
-extern GHandle gh,gc;
+extern u_int16_t dat_i;
+extern GHandle gc;
 
 /*===========================================================================*/
 /* Command line commands                                                     */
@@ -109,20 +110,26 @@ static void cmd_cpuload(BaseSequentialStream *chp, int argc, char *argv[]) {
 /* Additional Command line commands                                          */
 /*===========================================================================*/
 
+void m_shell_play(void){
+    if(play_stt == 0){
+        dat_i = 0;
+        m_data_zero();
+
+        play_stt = 1;
+        play_dur = 0;
+        palClearPad(GPIOG,13);
+
+        gwinClear(gc);
+        gwinPrintf(gc, "Start to Play \n");
+    }
+}
+
 static void cmd_play(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)argv;
     (void)argc;
 
-    if(play_stt == 0){
-        play_stt = 1;
-        play_dur = 0;
-
-        chprintf(chp, "Function: Random Number \n\r");
-        chprintf(chp, "Start to Play \n\r");
-
-        gwinPrintf(gc, "Function: Random Number \n");
-        gwinPrintf(gc, "Start to Play \n");
-    }
+    m_shell_play();
+    chprintf(chp, "Start to Play \n\r");
 }
 
 static void cmd_setv(BaseSequentialStream *chp, int argc, char *argv[]) {

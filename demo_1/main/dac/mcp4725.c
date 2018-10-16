@@ -29,6 +29,7 @@ void m_dac_setV(u_int16_t vout){
     txbuff[1] = (vout / 16);
     txbuff[2] = (vout % 16) << 4;
 
+    //never call I2C API from EXTI callback function or any lock zone
     i2cAcquireBus(&I2CD3);
 #if I2C_USE_STATUS
     status = i2cMasterTransmitTimeout(&I2CD3, MCP4725_ADDR, txbuff, 3, NULL, 0, tmo);

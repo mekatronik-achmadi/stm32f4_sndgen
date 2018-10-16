@@ -1,7 +1,7 @@
 #include "m_gui.h"
 #include "m_data.h"
 
-extern point vdata[N_DATA];
+extern point disp_data[N_DISPDATA];
 extern u_int8_t play_stt;
 extern u_int16_t play_dur;
 extern u_int16_t dat_i;
@@ -59,8 +59,11 @@ static THD_FUNCTION(thdDraw, arg) {
   gwinGraphSetOrigin(gh, 0, 0);
   gwinGraphSetStyle(gh, &GraphLine);
 
+  gwinClear(gh);
+  gwinGraphStartSet(gh);
+  gwinGraphDrawAxis(gh);
+
   gwinClear(gc);
-  gwinPrintf(gc, "System ready \n");
 
 #if DRAW_MODE==0
     uint16_t    i;
@@ -77,19 +80,19 @@ static THD_FUNCTION(thdDraw, arg) {
 #if DRAW_MODE==1
     uint16_t    i;
     while(true){
-        for(i = 0; i < N_DATA; i++) {
-            gwinGraphDrawPoint(gh, vdata[i].x, vdata[i].y);
+        for(i = 0; i < N_DISPDATA; i++) {
+            gwinGraphDrawPoint(gh, disp_data[i].x, disp_data[i].y);
         }
     }
 #endif
 
 #if DRAW_MODE==2
   while (true) {
-    gwinPrintf(gc, "Function: Random Number \n");
+    gwinPrintf(gc, "Start to Play \n");
 
     gwinGraphStartSet(gh);
     gwinGraphDrawAxis(gh);
-    gwinGraphDrawPoints(gh, vdata, sizeof(vdata)/sizeof(vdata[0]));
+    gwinGraphDrawPoints(gh, disp_data, sizeof(disp_data)/sizeof(disp_data[0]));
 
     gfxSleepMilliseconds(DISP_DELAY);
     gwinClear(gh);
@@ -99,29 +102,12 @@ static THD_FUNCTION(thdDraw, arg) {
 
 #if DRAW_MODE==3
   while(true){
-        if(palReadPad(GPIOA,0)){
-            if(play_stt == 0){
 
-                dat_i = 0;
-                m_dac_setV(0);
-                m_data_zero();
-
-                play_stt = 1;
-                play_dur = 0;
-                palClearPad(GPIOG,13);
-
-                gwinClear(gc);
-                gwinPrintf(gc, "Function: Random Number \n");
-                gwinPrintf(gc, "Start to Play \n");
-            }
-        }
-
-        gwinClear(gh);
         if(play_stt == 1){
-
+            gwinClear(gh);
             gwinGraphStartSet(gh);
             gwinGraphDrawAxis(gh);
-            gwinGraphDrawPoints(gh, vdata, sizeof(vdata)/sizeof(vdata[0]));
+            gwinGraphDrawPoints(gh, disp_data, sizeof(disp_data)/sizeof(disp_data[0]));
 
             palTogglePad(GPIOG,13);
         }
@@ -133,6 +119,10 @@ static THD_FUNCTION(thdDraw, arg) {
                 dat_i = 0;
                 m_data_zero();
                 m_dac_setV(0);
+
+                gwinClear(gh);
+                gwinGraphStartSet(gh);
+                gwinGraphDrawAxis(gh);
 
                 palClearPad(GPIOG,13);
                 gwinPrintf(gc, "Playing is over \n");
@@ -147,6 +137,5 @@ static THD_FUNCTION(thdDraw, arg) {
 
 void m_gui_start(void){
     gdispSetOrientation(GDISP_ROTATE_90);
-
     chThdCreateStatic(waDraw, sizeof(waDraw),	NORMALPRIO, thdDraw, NULL);
 }
