@@ -1,16 +1,37 @@
+/**
+ * @file   mcp4725.c
+ * @brief  MCP4725 DAC code
+ *
+ * @addtogroup M_IO
+ * @{
+ */
+
 #include "mcp4725.h"
 
 extern GHandle gc;
 
+/**
+ * @brief   I2C transmit buffer.
+ */
 static u_int8_t txbuff[3];
+
+/**
+ * @brief   I2C transmit interval.
+ */
 static systime_t tmo = MS2ST(4);
 
+/**
+ * @brief   I2C config.
+ */
 static const I2CConfig i2cfg = {
     OPMODE_I2C,
     400000,
     FAST_DUTY_CYCLE_2,
 };
 
+/**
+ * @brief   DAC set voltage function.
+ */
 void m_dac_setV(u_int16_t vout){
     u_int8_t i;
 
@@ -48,6 +69,9 @@ void m_dac_setV(u_int16_t vout){
 #endif
 }
 
+/**
+ * @brief   DAC start function.
+ */
 void m_dac_start(void){
     palSetPadMode(GPIOC, 9, PAL_MODE_ALTERNATE(4) | PAL_STM32_OTYPE_OPENDRAIN);
     palSetPadMode(GPIOA, 8, PAL_MODE_ALTERNATE(4) | PAL_STM32_OTYPE_OPENDRAIN);
@@ -57,7 +81,4 @@ void m_dac_start(void){
     gfxSleepMilliseconds(500);
     m_dac_setV(0);
 }
-
-
-
-
+/** @} */

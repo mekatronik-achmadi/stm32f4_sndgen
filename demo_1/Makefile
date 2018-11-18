@@ -23,7 +23,7 @@
 # ChibiOS settings
 ifeq ($(OPT_OS),chibios)
 	# See $(GFXLIB)/tools/gmake_scripts/os_chibios_x.mk for the list of variables
-	CHIBIOS				= /opt/stm32lib/chibios30
+	CHIBIOS				= /opt/stm32chlib/chibios30
 	CHIBIOS_VERSION			= 3
 	CHIBIOS_BOARD			= ST_STM32F429I_DISCOVERY
 	CHIBIOS_CPUCLASS		= ARMCMx

@@ -14,6 +14,14 @@
     limitations under the License.
 */
 
+/**
+ * @file   usbcfg.c
+ * @brief  virtual USB Enumeration code
+ *
+ * @addtogroup M_USB
+ * @{
+ */
+
 #include "ch.h"
 #include "hal.h"
 
@@ -312,3 +320,4 @@ const SerialUSBConfig serusbcfg = {
   USBD2_DATA_AVAILABLE_EP,
   USBD2_INTERRUPT_REQUEST_EP
 };
+/** @} */

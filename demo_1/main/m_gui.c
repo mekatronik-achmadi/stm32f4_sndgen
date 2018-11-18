@@ -1,3 +1,11 @@
+/**
+ * @file   m_gui.c
+ * @brief  GUI handler code
+ *
+ * @addtogroup M_GUI
+ * @{
+ */
+
 #include "m_gui.h"
 #include "m_data.h"
 
@@ -6,8 +14,14 @@ extern u_int8_t play_stt;
 extern u_int16_t play_dur;
 extern u_int16_t dat_i;
 
+/**
+ * @brief   overall graph object variable.
+ */
 static GGraphObject g;
 
+/**
+ * @brief   line graph object variable.
+ */
 static GGraphStyle GraphLine = {
     { GGRAPH_POINT_DOT, 10, White },          // Point
     { GGRAPH_LINE_SOLID, 10, White },          // Line
@@ -22,9 +36,20 @@ static GGraphStyle GraphLine = {
 /* GRAPH DRAW                                                                */
 /*===========================================================================*/
 
-GHandle gh,gc;
+/**
+ * @brief   graph window variable.
+ */
+GHandle gh;
+
+/**
+ * @brief   console window variable.
+ */
+GHandle gc;
 
 static THD_WORKING_AREA(waDraw, 256);
+/**
+ * @brief   Main Draw routine.
+ */
 static THD_FUNCTION(thdDraw, arg) {
 
     font_t	    gfont;
@@ -135,7 +160,11 @@ static THD_FUNCTION(thdDraw, arg) {
 
 }
 
+/**
+ * @brief   gui start function.
+ */
 void m_gui_start(void){
     gdispSetOrientation(GDISP_ROTATE_90);
     chThdCreateStatic(waDraw, sizeof(waDraw),	NORMALPRIO, thdDraw, NULL);
 }
+/** @} */

@@ -1,3 +1,11 @@
+/**
+ * @file   main.c
+ * @brief  Main source code
+ *
+ * @addtogroup MAIN
+ * @{
+ */
+
 #include "ch.h"
 #include "hal.h"
 #include "gfx.h"
@@ -21,11 +29,11 @@
 
 extern GHandle gc;
 
-/*===========================================================================*/
-/* LED PART                                                                  */
-/*===========================================================================*/
-
 static THD_WORKING_AREA(waLed1, 128);
+/**
+ * @brief  LED G14 as indicator.
+ *
+ */
 static THD_FUNCTION(thdLed1, arg) {
 
   (void)arg;
@@ -38,6 +46,10 @@ static THD_FUNCTION(thdLed1, arg) {
   }
 }
 
+/**
+ * @brief   Starting LED routine.
+ *
+ */
 static void m_led_start(void){
     palSetPadMode(GPIOG,14,PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(GPIOG,13,PAL_MODE_OUTPUT_PUSHPULL);
@@ -46,10 +58,14 @@ static void m_led_start(void){
     chThdCreateStatic(waLed1, sizeof(waLed1),	NORMALPRIO, thdLed1, NULL);
 }
 
-/*===========================================================================*/
-/* Initialization and main thread.                                           */
-/*===========================================================================*/
-
+/**
+ * @brief   Main Function
+ *
+ * @return              Status of execution
+ * @retval 0	        Success
+ * @retval 1			Not Success
+ *
+ */
 int main(void) {
 
     gfxInit();
@@ -71,4 +87,4 @@ int main(void) {
     	gfxSleepMilliseconds(500);
     }
 }
-
+/** @} */

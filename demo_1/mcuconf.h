@@ -13,7 +13,13 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-
+/**
+ * @file   mcuconf.h
+ * @brief  MCU configuration header
+ *
+ * @addtogroup HAL_CONF
+ * @{
+ */
 #ifndef _MCUCONF_H_
 #define _MCUCONF_H_
 
@@ -335,3 +341,4 @@
 #define STM32_USB_OTGFIFO_FILL_BASEPRI      0
 
 #endif /* _MCUCONF_H_ */
+/** @} */

@@ -1,3 +1,11 @@
+/**
+ * @file   m_exti.c
+ * @brief  External interrupt handler code
+ *
+ * @addtogroup M_IO
+ * @{
+ */
+
 #include "m_exti.h"
 
 extern u_int8_t play_stt;
@@ -6,6 +14,9 @@ extern u_int16_t dat_i;
 
 extern GHandle gc;
 
+/**
+ * @brief  play start interrupt callback.
+ */
 static void extPlayStart(EXTDriver *extp, expchannel_t channel){
     (void)extp;
     (void)channel;
@@ -13,6 +24,9 @@ static void extPlayStart(EXTDriver *extp, expchannel_t channel){
     m_shell_play();
 }
 
+/**
+ * @brief   external interrupt config variable.
+ */
 static const EXTConfig extcfg = {
   {
     {EXT_CH_MODE_RISING_EDGE | EXT_CH_MODE_AUTOSTART | EXT_MODE_GPIOA, extPlayStart},
@@ -41,9 +55,13 @@ static const EXTConfig extcfg = {
   }
 };
 
+/**
+ * @brief   external interrupt start.
+ */
 void m_exti_start(void){
     palSetPadMode(GPIOA,0,PAL_MODE_INPUT_PULLDOWN);
 
     extStart(&EXTD1, &extcfg);
     extChannelEnable(&EXTD1, 0);
 }
+/** @} */

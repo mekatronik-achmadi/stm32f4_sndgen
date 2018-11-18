@@ -27,6 +27,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * @file   gfxconf.h
+ * @brief  uGFX configuration header
+ *
+ * @addtogroup M_GUI
+ * @{
+ */
 #ifndef _GFXCONF_H
 #define _GFXCONF_H
 
@@ -68,4 +75,4 @@
 #define GMISC_NEED_FASTTRIG		TRUE
 
 #endif /* _GFXCONF_H */
-
+/** @} */

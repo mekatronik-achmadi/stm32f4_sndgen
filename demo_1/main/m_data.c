@@ -1,13 +1,38 @@
+/**
+ * @file   m_data.c
+ * @brief  data generation code
+ *
+ * @addtogroup M_DATA
+ * @{
+ */
+
 #include "m_data.h"
 
 extern u_int16_t dac_sine[DATASIZE];
 
+/**
+ * @brief   data point array.
+ */
 point disp_data[N_DISPDATA];
 
+/**
+ * @brief   play status variable.
+ */
 u_int8_t play_stt;
+
+/**
+ * @brief   play duration variable.
+ */
 u_int16_t play_dur;
+
+/**
+ * @brief   global data array index.
+ */
 u_int16_t dat_i;
 
+/**
+ * @brief   data array zero function.
+ */
 void m_data_zero(void){
     u_int16_t i;
 
@@ -17,6 +42,9 @@ void m_data_zero(void){
     }
 }
 
+/**
+ * @brief   data array shift function.
+ */
 void m_data_shift(void){
     u_int16_t i;
 
@@ -32,6 +60,9 @@ void m_data_shift(void){
 }
 
 static THD_WORKING_AREA(waGenData, 128);
+/**
+ * @brief   data generation routine.
+ */
 static THD_FUNCTION(thdGenData, arg) {
     u_int8_t v_dac;
 
@@ -44,7 +75,7 @@ static THD_FUNCTION(thdGenData, arg) {
         if(play_stt == 1){
             m_data_shift();
 
-            m_dac_setV(dac_sine[dat_i]);
+            m_dac_setV(LINE_LEVEL*dac_sine[dat_i]);
             v_dac = GRAPH_SCALE*dac_sine[dat_i];
 
             dat_i++;
@@ -64,6 +95,9 @@ static THD_FUNCTION(thdGenData, arg) {
 }
 
 static THD_WORKING_AREA(waPlay, 256);
+/**
+ * @brief   play duration increment routine.
+ */
 static THD_FUNCTION(thdPlay, arg) {
     (void)arg;
     chRegSetThreadName("playduration");
@@ -77,9 +111,13 @@ static THD_FUNCTION(thdPlay, arg) {
     }
 }
 
+/**
+ * @brief   data generation start function.
+ */
 void m_datagen_start(void){
     palSetPadMode(GPIOA, 0,PAL_MODE_INPUT_PULLDOWN);
 
     chThdCreateStatic(waGenData, sizeof(waGenData),	NORMALPRIO, thdGenData, NULL);
     chThdCreateStatic(waPlay, sizeof(waPlay),	NORMALPRIO, thdPlay, NULL);
 }
+/** @} */

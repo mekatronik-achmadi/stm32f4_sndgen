@@ -13,6 +13,13 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
+/**
+ * @file   usbcfg.h
+ * @brief  virtual USB Enumeration header
+ *
+ * @addtogroup M_USB
+ * @{
+ */
 
 #ifndef _USBCFG_H_
 #define _USBCFG_H_

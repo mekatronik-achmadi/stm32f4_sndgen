@@ -1,3 +1,11 @@
+/**
+ * @file   m_exti.h
+ * @brief  External interrupt handler header
+ *
+ * @addtogroup M_IO
+ * @{
+ */
+
 #ifndef M_EXTI_H
 #define M_EXTI_H
 
@@ -23,3 +31,4 @@
 void m_exti_start(void);
 
 #endif // M_EXTI_H
+/** @} */

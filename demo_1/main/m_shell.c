@@ -1,3 +1,11 @@
+/**
+ * @file   m_shell.c
+ * @brief  Communication Shell handler code
+ *
+ * @addtogroup M_USB
+ * @{
+ */
+
 #include "m_shell.h"
 #include "dac/mcp4725.h"
 
@@ -10,9 +18,19 @@ extern GHandle gc;
 /* Command line commands                                                     */
 /*===========================================================================*/
 
+/**
+ * @brief   Serial Driver object.
+ */
 SerialUSBDriver SDU1;
+
+/**
+ * @brief   shell thread object.
+ */
 thread_t *shelltp = NULL;
 
+/**
+ * @brief   show memory usage command.
+ */
 static void cmd_mem(BaseSequentialStream *chp, int argc, char *argv[]) {
   size_t n, size;
 
@@ -27,6 +45,9 @@ static void cmd_mem(BaseSequentialStream *chp, int argc, char *argv[]) {
   chprintf(chp, "heap free total  : %u bytes\r\n", size);
 }
 
+/**
+ * @brief   show threads usage command.
+ */
 static void cmd_threads(BaseSequentialStream *chp, int argc, char *argv[]) {
   static const char *states[] = {CH_STATE_NAMES};
   thread_t *tp;
@@ -47,6 +68,9 @@ static void cmd_threads(BaseSequentialStream *chp, int argc, char *argv[]) {
   } while (tp != NULL);
 }
 
+/**
+ * @brief   all system test command.
+ */
 static void cmd_test(BaseSequentialStream *chp, int argc, char *argv[]) {
   thread_t *tp;
 
@@ -64,8 +88,10 @@ static void cmd_test(BaseSequentialStream *chp, int argc, char *argv[]) {
   chThdWait(tp);
 }
 
-// open chconf.h and set CH_DBG_STATISTICS to TRUE
-
+/**
+ * @brief   show cpu usage command.
+ * @note    Requires @p CH_DBG_STATISTICS.
+ */
 static void cmd_cpuload(BaseSequentialStream *chp, int argc, char *argv[]) {
 
   thread_t *tp;
@@ -110,6 +136,9 @@ static void cmd_cpuload(BaseSequentialStream *chp, int argc, char *argv[]) {
 /* Additional Command line commands                                          */
 /*===========================================================================*/
 
+/**
+ * @brief   Start playing from shell environment.
+ */
 void m_shell_play(void){
     if(play_stt == 0){
         dat_i = 0;
@@ -124,6 +153,9 @@ void m_shell_play(void){
     }
 }
 
+/**
+ * @brief   Start play command.
+ */
 static void cmd_play(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)argv;
     (void)argc;
@@ -132,6 +164,9 @@ static void cmd_play(BaseSequentialStream *chp, int argc, char *argv[]) {
     chprintf(chp, "Start to Play \n\r");
 }
 
+/**
+ * @brief   Set DAC command.
+ */
 static void cmd_setv(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void) chp;
     u_int16_t v_dac;
@@ -152,6 +187,9 @@ static void cmd_setv(BaseSequentialStream *chp, int argc, char *argv[]) {
 /* Command line serial usb                                                   */
 /*===========================================================================*/
 
+/**
+ * @brief   commands enumeration.
+ */
 static const ShellCommand commands[] = {
   {"mem", cmd_mem},
   {"threads", cmd_threads},
@@ -162,6 +200,9 @@ static const ShellCommand commands[] = {
   {NULL, NULL}
 };
 
+/**
+ * @brief   shell driver command structure.
+ */
 static const ShellConfig shell_cfg1 = {
   (BaseSequentialStream *)&SDU1,
   commands
@@ -179,6 +220,9 @@ void m_shell_start(void){
     usbConnectBus(serusbcfg.usbp);
 }
 
+/**
+ * @brief   Setup shell function to loop.
+ */
 void m_shell_setup(void){
     if (!shelltp) {
       if (SDU1.config->usbp->state == USB_ACTIVE) {
@@ -192,3 +236,4 @@ void m_shell_setup(void){
       }
     }
 }
+/** @} */

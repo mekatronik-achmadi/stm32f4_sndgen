@@ -1,7 +1,21 @@
+/**
+ * @file   m_sine.c
+ * @brief  sine waveform code
+ *
+ * @addtogroup M_DATA
+ * @{
+ */
+
 #include "m_sine.h"
 
+/**
+ * @brief   global data array.
+ */
 u_int16_t dac_tri[DATATRISIZE];
 
+/**
+ * @brief   create triangular waveform function.
+ */
 void m_dac_triangular(void){
     u_int16_t i;
 
@@ -13,6 +27,9 @@ void m_dac_triangular(void){
     }
 }
 
+/**
+ * @brief   create sine waveform data array.
+ */
 #if WAVE_SINE_8BIT
 const u_int16_t dac_sine[DATASIZE] = {
     2048, 2098, 2148, 2198, 2248, 2298, 2348, 2398,
@@ -117,3 +134,4 @@ const u_int16_t dac_sine[DATASIZE] =
     1847, 1872, 1897, 1922, 1948, 1973, 1998, 2023
 };
 #endif
+/** @} */
