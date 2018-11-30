@@ -21,6 +21,11 @@ point disp_data[N_DISPDATA];
 u_int8_t play_stt;
 
 /**
+ * @brief   draw status variable.
+ */
+u_int8_t draw_stt;
+
+/**
  * @brief   play duration variable.
  */
 u_int16_t play_dur;
@@ -59,40 +64,52 @@ void m_data_shift(void){
 #endif
 }
 
-static THD_WORKING_AREA(waGenData, 128);
 /**
- * @brief   data generation routine.
+ * @brief   prepare data display.
  */
-static THD_FUNCTION(thdGenData, arg) {
-    u_int8_t v_dac;
+void m_data_disp(void){
+    u_int16_t gi;
+    u_int16_t vi;
+    u_int16_t vdac;
 
-    (void)arg;
-
-    chRegSetThreadName("dataupdate");
-
-    m_dac_triangular();
-    while (true) {
-        if(play_stt == 1){
-            m_data_shift();
-
-            m_dac_setV(LINE_LEVEL*dac_sine[dat_i]);
-            v_dac = GRAPH_SCALE*dac_sine[dat_i];
-
-            dat_i++;
-            if(dat_i == DATASIZE){
-                dat_i = 0;
-            }
-
+    vi = 0;
+    for(gi=0;gi < N_DISPDATA;gi++){
+        m_data_shift();
+        vdac =  GRAPH_SCALE*dac_sine[vi];
 #if LEFT_TO_RIGHT
-            disp_data[N_DISPDATA-1].y = v_dac;
+            disp_data[N_DISPDATA-1].y = vdac;
 #else
             disp_data[0].y = v_dac;
 #endif
+        vi++;
+        if(vi==DATASIZE){
+           vi = 0;
         }
-
-        gfxSleepMicroseconds(500);
     }
 }
+
+void m_data_play(void){
+    if(play_stt == 1){
+        m_dac_setV(LINE_LEVEL*dac_sine[dat_i]);
+
+        dat_i++;
+        if(dat_i == DATASIZE){
+            dat_i = 0;
+        }
+    }
+}
+
+//static THD_WORKING_AREA(waGenData, 128);
+//static THD_FUNCTION(thdGenData, arg) {
+//    (void)arg;
+
+//    chRegSetThreadName("dataupdate");
+
+//    while (true) {
+//        m_data_play();
+//        chThdSleep(TIME_IMMEDIATE);
+//    }
+//}
 
 static THD_WORKING_AREA(waPlay, 256);
 /**
@@ -117,7 +134,7 @@ static THD_FUNCTION(thdPlay, arg) {
 void m_datagen_start(void){
     palSetPadMode(GPIOA, 0,PAL_MODE_INPUT_PULLDOWN);
 
-    chThdCreateStatic(waGenData, sizeof(waGenData),	NORMALPRIO, thdGenData, NULL);
+//    chThdCreateStatic(waGenData, sizeof(waGenData),	NORMALPRIO, thdGenData, NULL);
     chThdCreateStatic(waPlay, sizeof(waPlay),	NORMALPRIO, thdPlay, NULL);
 }
 /** @} */

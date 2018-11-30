@@ -22,11 +22,6 @@
 #include "stdio.h"
 
 /**
- * @brief   gui refresh rate.
- */
-#define DISP_DELAY 10
-
-/**
  * @brief   define GUI draw mode:
  *          - 0 :for use test using sine graph
  *          - 1 :for use draw per point

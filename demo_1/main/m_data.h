@@ -57,6 +57,8 @@
 void m_datagen_start(void);
 void m_data_shift(void);
 void m_data_zero(void);
+void m_data_disp(void);
+void m_data_play(void);
 
 #endif // M_DATA_H
 /** @} */

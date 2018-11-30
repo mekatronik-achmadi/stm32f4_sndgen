@@ -16,11 +16,6 @@ extern GHandle gc;
 static u_int8_t txbuff[3];
 
 /**
- * @brief   I2C transmit interval.
- */
-static systime_t tmo = MS2ST(4);
-
-/**
  * @brief   I2C config.
  */
 static const I2CConfig i2cfg = {
@@ -55,7 +50,7 @@ void m_dac_setV(u_int16_t vout){
 #if I2C_USE_STATUS
     status = i2cMasterTransmitTimeout(&I2CD3, MCP4725_ADDR, txbuff, 3, NULL, 0, tmo);
 #else
-    i2cMasterTransmitTimeout(&I2CD3, MCP4725_ADDR, txbuff, 3, NULL, 0, tmo);
+    i2cMasterTransmitTimeout(&I2CD3, MCP4725_ADDR, txbuff, 3, NULL, 0, 0);
 #endif
     i2cReleaseBus(&I2CD3);
 
@@ -73,8 +68,8 @@ void m_dac_setV(u_int16_t vout){
  * @brief   DAC start function.
  */
 void m_dac_start(void){
-    palSetPadMode(GPIOC, 9, PAL_MODE_ALTERNATE(4) | PAL_STM32_OTYPE_OPENDRAIN);
-    palSetPadMode(GPIOA, 8, PAL_MODE_ALTERNATE(4) | PAL_STM32_OTYPE_OPENDRAIN);
+    palSetPadMode(GPIOC, 9, PAL_MODE_ALTERNATE(4) | PAL_STM32_OTYPE_OPENDRAIN); //SDA
+    palSetPadMode(GPIOA, 8, PAL_MODE_ALTERNATE(4) | PAL_STM32_OTYPE_OPENDRAIN); //SCL
 
     i2cStart(&I2CD3, &i2cfg);
 

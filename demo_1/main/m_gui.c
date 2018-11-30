@@ -11,6 +11,7 @@
 
 extern point disp_data[N_DISPDATA];
 extern u_int8_t play_stt;
+extern u_int8_t draw_stt;
 extern u_int16_t play_dur;
 extern u_int16_t dat_i;
 
@@ -128,13 +129,17 @@ static THD_FUNCTION(thdDraw, arg) {
 #if DRAW_MODE==3
   while(true){
 
-        if(play_stt == 1){
+        if(draw_stt == 1){
             gwinClear(gh);
             gwinGraphStartSet(gh);
             gwinGraphDrawAxis(gh);
+
+            m_data_disp();
             gwinGraphDrawPoints(gh, disp_data, sizeof(disp_data)/sizeof(disp_data[0]));
 
-            palTogglePad(GPIOG,13);
+            draw_stt = 0;
+            play_stt = 1;
+            palSetPad(GPIOG,13);
         }
 
         if(play_dur >= DURATION){
@@ -154,7 +159,7 @@ static THD_FUNCTION(thdDraw, arg) {
             }
         }
 
-        gfxSleepMilliseconds(DISP_DELAY);
+        chThdSleepMicroseconds(1);
   }
 #endif
 

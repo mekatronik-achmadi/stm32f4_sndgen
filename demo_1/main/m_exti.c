@@ -8,12 +8,6 @@
 
 #include "m_exti.h"
 
-extern u_int8_t play_stt;
-extern u_int16_t play_dur;
-extern u_int16_t dat_i;
-
-extern GHandle gc;
-
 /**
  * @brief  play start interrupt callback.
  */

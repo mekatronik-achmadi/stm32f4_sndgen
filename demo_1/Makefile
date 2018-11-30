@@ -45,7 +45,9 @@ GFXSRC +=   $(DEMODIR)/main.c \
             $(DEMODIR)/m_shell.c \
             $(DEMODIR)/m_data.c \
             $(DEMODIR)/m_exti.c \
-            $(DEMODIR)/m_gui.c
+            $(DEMODIR)/m_gui.c \
+            $(DEMODIR)/m_gpt.c \
+            $(DEMODIR)/m_pwm.c
 
 include $(CHIBIOS)/test/rt/test.mk
 

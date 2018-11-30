@@ -7,8 +7,10 @@
  */
 
 #include "m_shell.h"
+#include "m_pwm.h"
 #include "dac/mcp4725.h"
 
+extern u_int8_t draw_stt;
 extern u_int8_t play_stt;
 extern u_int16_t play_dur;
 extern u_int16_t dat_i;
@@ -140,11 +142,11 @@ static void cmd_cpuload(BaseSequentialStream *chp, int argc, char *argv[]) {
  * @brief   Start playing from shell environment.
  */
 void m_shell_play(void){
-    if(play_stt == 0){
+    if((draw_stt == 0) && (play_stt == 0)){
         dat_i = 0;
         m_data_zero();
 
-        play_stt = 1;
+        draw_stt = 1;
         play_dur = 0;
         palClearPad(GPIOG,13);
 
@@ -183,6 +185,24 @@ static void cmd_setv(BaseSequentialStream *chp, int argc, char *argv[]) {
     gwinPrintf(gc, txt_i2c);
 }
 
+static void cmd_pwm(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void) chp;
+    u_int8_t v_pwm;
+    char txt_i2c[16];
+
+    if(argc!=1){
+        return;
+    }
+
+    v_pwm = atoi(argv[0]);
+
+    pwmEnableChannel(&PWMD1, 0, PWM_PERCENTAGE_TO_WIDTH(&PWMD1, v_pwm*PWM_DUTY_SCALE));
+
+    chsnprintf(txt_i2c,16,"PWM = %4i\n",v_pwm);
+    gwinPrintf(gc, txt_i2c);
+}
+
+
 /*===========================================================================*/
 /* Command line serial usb                                                   */
 /*===========================================================================*/
@@ -197,6 +217,7 @@ static const ShellCommand commands[] = {
   {"cpu", cmd_cpuload},
   {"play",cmd_play},
   {"setv",cmd_setv},
+  {"pwm",cmd_pwm},
   {NULL, NULL}
 };
 
