@@ -99,18 +99,6 @@ void m_data_play(void){
     }
 }
 
-//static THD_WORKING_AREA(waGenData, 128);
-//static THD_FUNCTION(thdGenData, arg) {
-//    (void)arg;
-
-//    chRegSetThreadName("dataupdate");
-
-//    while (true) {
-//        m_data_play();
-//        chThdSleep(TIME_IMMEDIATE);
-//    }
-//}
-
 static THD_WORKING_AREA(waPlay, 256);
 /**
  * @brief   play duration increment routine.
@@ -133,8 +121,6 @@ static THD_FUNCTION(thdPlay, arg) {
  */
 void m_datagen_start(void){
     palSetPadMode(GPIOA, 0,PAL_MODE_INPUT_PULLDOWN);
-
-//    chThdCreateStatic(waGenData, sizeof(waGenData),	NORMALPRIO, thdGenData, NULL);
     chThdCreateStatic(waPlay, sizeof(waPlay),	NORMALPRIO, thdPlay, NULL);
 }
 /** @} */
