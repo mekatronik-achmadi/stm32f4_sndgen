@@ -8,7 +8,7 @@
 
 #include "m_data.h"
 
-extern u_int16_t dac_sine[DATASIZE];
+extern u_int16_t dac_sinehi[DATASIZE];
 
 /**
  * @brief   data point array.
@@ -75,7 +75,7 @@ void m_data_disp(void){
     vi = 0;
     for(gi=0;gi < N_DISPDATA;gi++){
         m_data_shift();
-        vdac =  GRAPH_SCALE*dac_sine[vi];
+        vdac =  GRAPH_SCALE*dac_sinehi[vi];
 #if LEFT_TO_RIGHT
             disp_data[N_DISPDATA-1].y = vdac;
 #else
@@ -90,7 +90,7 @@ void m_data_disp(void){
 
 void m_data_play(void){
     if(play_stt == 1){
-        m_dac_setV(LINE_LEVEL*dac_sine[dat_i]);
+        m_dac_setV(LINE_LEVEL*dac_sinehi[dat_i]);
 
         dat_i++;
         if(dat_i == DATASIZE){
