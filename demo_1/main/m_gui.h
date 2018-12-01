@@ -21,6 +21,11 @@
 #include "stdlib.h"
 #include "stdio.h"
 
+#include "m_data.h"
+#include "m_gui.h"
+#include "m_shell.h"
+#include "dac/mcp4725.h"
+
 /**
  * @brief   define GUI draw mode:
  *          - 0 :for use test using sine graph

@@ -21,6 +21,10 @@
 #include "stdlib.h"
 #include "stdio.h"
 
+#include "m_data.h"
+#include "m_shell.h"
+#include "dac/mcp4725.h"
+
 #define PWM_DUTY_SCALE 100
 
 void m_pwm_start(void);

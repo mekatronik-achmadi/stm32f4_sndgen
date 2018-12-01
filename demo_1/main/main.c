@@ -25,7 +25,6 @@
 #include "m_gui.h"
 #include "m_exti.h"
 #include "m_pwm.h"
-#include "m_gpt.h"
 
 #include "dac/mcp4725.h"
 
@@ -80,9 +79,8 @@ int main(void) {
 
     m_dac_start();
 
-    m_gpt_start();
     m_exti_start();
-//    m_pwm_start(); //conflict PWMD1 vs I2CD3
+    m_pwm_start();
 
     gwinPrintf(gc, "System ready \n");
 
