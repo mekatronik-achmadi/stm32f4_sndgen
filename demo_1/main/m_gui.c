@@ -139,7 +139,6 @@ static THD_FUNCTION(thdDraw, arg) {
 
             draw_stt = 0;
             play_stt = 1;
-            palSetPad(GPIOG,13);
         }
 
         if(play_dur >= DURATION){

@@ -96,6 +96,7 @@ void m_data_play(void){
         if(dat_i == DATASIZE){
             dat_i = 0;
         }
+        palTogglePad(GPIOG,13);
     }
 }
 

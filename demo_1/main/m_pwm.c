@@ -21,8 +21,8 @@ static PWMConfig pwmcfg = {
 };
 
 void m_pwm_start(void){
-//    palSetPadMode(GPIOA,8,PAL_MODE_ALTERNATE(1));  //conflict PWMD1 vs I2CD3
+    palSetPadMode(GPIOA,8,PAL_MODE_ALTERNATE(1));  //conflict PWMD1 vs I2CD3
     pwmStart(&PWMD1, &pwmcfg);
     pwmEnablePeriodicNotification(&PWMD1);
-//    pwmEnableChannel(&PWMD1, 0, PWM_PERCENTAGE_TO_WIDTH(&PWMD1, 5000));
+    pwmEnableChannel(&PWMD1, 0, PWM_PERCENTAGE_TO_WIDTH(&PWMD1, 5000));
 }
