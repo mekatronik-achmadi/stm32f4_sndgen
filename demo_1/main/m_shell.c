@@ -196,7 +196,7 @@ static void cmd_pwm(BaseSequentialStream *chp, int argc, char *argv[]) {
 
     v_pwm = atoi(argv[0]);
 
-    pwmEnableChannel(&PWMD1, 0, PWM_PERCENTAGE_TO_WIDTH(&PWMD1, v_pwm*PWM_DUTY_SCALE));
+    pwmEnableChannel(&PWMD1, 0, v_pwm*PWM_DUTY_SCALE);
 
     chsnprintf(txt_i2c,16,"PWM = %4i\n",v_pwm);
     gwinPrintf(gc, txt_i2c);
