@@ -74,12 +74,54 @@ static void cmd_send4(BaseSequentialStream *chp, int argc, char *argv[]) {
   chprintf((BaseSequentialStream *)&SD2,"AT+CIPCLOSE=4\r\n");
 }
 
+static void cmd_send5(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  (void)argv;
+  if (argc > 0) {
+    chprintf(chp, "Usage: 1,CONNECT\r\n");
+    return;
+  }
+
+  chprintf((BaseSequentialStream *)&SD2,"AT+CIPSEND=5,8\r\n");
+  text_http();
+  chprintf((BaseSequentialStream *)&SD2,"AT+CIPCLOSE=5\r\n");
+}
+
+static void cmd_send6(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  (void)argv;
+  if (argc > 0) {
+    chprintf(chp, "Usage: 1,CONNECT\r\n");
+    return;
+  }
+
+  chprintf((BaseSequentialStream *)&SD2,"AT+CIPSEND=6,8\r\n");
+  text_http();
+  chprintf((BaseSequentialStream *)&SD2,"AT+CIPCLOSE=6\r\n");
+}
+
+static void cmd_send7(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  (void)argv;
+  if (argc > 0) {
+    chprintf(chp, "Usage: 1,CONNECT\r\n");
+    return;
+  }
+
+  chprintf((BaseSequentialStream *)&SD2,"AT+CIPSEND=7,8\r\n");
+  text_http();
+  chprintf((BaseSequentialStream *)&SD2,"AT+CIPCLOSE=7\r\n");
+}
+
 static const ShellCommand commands[] = {
     {"0,CONNECT", cmd_send0},
     {"1,CONNECT", cmd_send1},
     {"2,CONNECT", cmd_send2},
     {"3,CONNECT", cmd_send3},
     {"4,CONNECT", cmd_send4},
+    {"5,CONNECT", cmd_send5},
+    {"6,CONNECT", cmd_send6},
+    {"7,CONNECT", cmd_send7},
     {NULL, NULL}
 };
 
