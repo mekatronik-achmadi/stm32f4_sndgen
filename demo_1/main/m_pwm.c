@@ -2,7 +2,7 @@
 
 static PWMConfig pwmcfg = {
   100000,                                    /* 10kHz PWM clock frequency.   */
-  1000,                                        /* Initial PWM period 1S.       */
+  10000,                                        /* Initial PWM period 1S.       */
   NULL,
   {
    {PWM_OUTPUT_ACTIVE_LOW, NULL},
@@ -17,5 +17,5 @@ static PWMConfig pwmcfg = {
 void m_pwm_start(void){
     palSetPadMode(GPIOA,8,PAL_MODE_ALTERNATE(1));  //conflict PWMD1 vs I2CD3
     pwmStart(&PWMD1, &pwmcfg);
-    pwmEnableChannel(&PWMD1, 0, 50*PWM_DUTY_SCALE);
+    pwmEnableChannel(&PWMD1, 0, 5000*PWM_DUTY_SCALE);
 }
