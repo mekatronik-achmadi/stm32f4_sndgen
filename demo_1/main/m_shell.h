@@ -34,7 +34,7 @@
 #define TEST_WA_SIZE    THD_WORKING_AREA_SIZE(256)
 
 void m_shell_start(void);
-void m_shell_setup(void);
+void m_shell_term(void);
 void m_shell_play(void);
 
 #endif // M_SHELL_H

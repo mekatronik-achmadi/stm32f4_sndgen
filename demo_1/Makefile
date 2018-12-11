@@ -42,9 +42,11 @@ GFXSRC +=   $(DEMODIR)/main.c \
             $(DEMODIR)/dac/mcp4725.c \
             $(DEMODIR)/wave/m_sine.c \
             $(DEMODIR)/usbcfg.c \
+            $(DEMODIR)/shell.c \
             $(DEMODIR)/m_shell.c \
             $(DEMODIR)/m_data.c \
             $(DEMODIR)/m_exti.c \
+            $(DEMODIR)/m_web.c \
             $(DEMODIR)/m_gui.c \
             $(DEMODIR)/m_gpt.c \
             $(DEMODIR)/m_pwm.c
@@ -66,9 +68,9 @@ SRC      =  $(TESTSRC) \
             $(CHIBIOS)/os/hal/lib/streams/chprintf.c \
             $(CHIBIOS)/os/hal/lib/streams/memstreams.c \
             $(CHIBIOS)/os/hal/lib/streams/nullstreams.c \
-            $(CHIBIOS)/os/various/shell.c \
             $(CHIBIOS)/os/various/evtimer.c \
             $(CHIBIOS)/os/various/syscalls.c
+            #$(CHIBIOS)/os/various/shell.c
 
 OBJS     =
 DEFS     =  -DSTM32_PLLSAIN_VALUE=192 -DSTM32_PLLSAIQ_VALUE=7

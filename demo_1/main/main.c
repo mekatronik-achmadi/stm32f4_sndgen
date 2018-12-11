@@ -24,6 +24,7 @@
 #include "m_data.h"
 #include "m_gui.h"
 #include "m_exti.h"
+#include "m_web.h"
 #include "m_gpt.h"
 #include "m_pwm.h"
 
@@ -74,21 +75,22 @@ int main(void) {
 
     m_led_start();
 
-    m_shell_start();
-    m_datagen_start();
+//    m_datagen_start();
     m_gui_start();
 
-    m_dac_start();
+//    m_dac_start();
+//    m_shell_start();
+//    m_web_start();
 
 //    m_exti_start();
 //    m_gpt_start();
-    m_pwm_start(); //conflict PWMD1-CH1 vs I2CD3-SCL
-
+//    m_pwm_start(); //conflict PWMD1-CH1 vs I2CD3-SCL
     gwinPrintf(gc, "System ready \n");
 
     while(true) {
-        m_shell_setup();
-    	gfxSleepMilliseconds(500);
+//        m_shell_term();
+//        m_web_term();
+        gfxSleepMilliseconds(500);
     }
 }
 /** @} */

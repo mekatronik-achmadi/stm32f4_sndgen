@@ -28,7 +28,7 @@ SerialUSBDriver SDU1;
 /**
  * @brief   shell thread object.
  */
-thread_t *shelltp = NULL;
+static thread_t *shelltp = NULL;
 
 /**
  * @brief   show memory usage command.
@@ -244,7 +244,7 @@ void m_shell_start(void){
 /**
  * @brief   Setup shell function to loop.
  */
-void m_shell_setup(void){
+void m_shell_term(void){
     if (!shelltp) {
       if (SDU1.config->usbp->state == USB_ACTIVE) {
         shelltp = shellCreate(&shell_cfg1, SHELL_WA_SIZE, NORMALPRIO);

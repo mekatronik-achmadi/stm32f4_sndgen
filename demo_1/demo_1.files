@@ -14,7 +14,13 @@ main/m_gui.h
 main/m_pwm.c
 main/m_pwm.h
 main/m_shell.c
+main/m_shell.c
 main/m_shell.h
+main/m_shell.h
+main/m_web.c
+main/m_web.h
+main/shell.c
+main/shell.h
 main/wave/m_sine.c
 main/wave/m_sine.h
 mcuconf.h
