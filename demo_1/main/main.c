@@ -80,7 +80,7 @@ int main(void) {
 
 //    m_dac_start();
 //    m_shell_start();
-//    m_web_start();
+    m_web_start();
 
 //    m_exti_start();
 //    m_gpt_start();
@@ -89,7 +89,7 @@ int main(void) {
 
     while(true) {
 //        m_shell_term();
-//        m_web_term();
+        m_web_term();
         gfxSleepMilliseconds(500);
     }
 }

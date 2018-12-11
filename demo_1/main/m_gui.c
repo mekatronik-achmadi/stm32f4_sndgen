@@ -170,5 +170,6 @@ static THD_FUNCTION(thdDraw, arg) {
 void m_gui_start(void){
     gdispSetOrientation(GDISP_ROTATE_90);
     chThdCreateStatic(waDraw, sizeof(waDraw),	NORMALPRIO, thdDraw, NULL);
+    gfxSleepMilliseconds(500);
 }
 /** @} */
