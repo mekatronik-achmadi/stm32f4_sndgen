@@ -40,16 +40,8 @@ GHandle gh;
  */
 GHandle gc;
 
-static THD_WORKING_AREA(waDraw, 256);
-/**
- * @brief   Main Draw routine.
- */
-static THD_FUNCTION(thdDraw, arg) {
-
+static void m_graph_empty(void){
     font_t	    gfont;
-
-    (void)arg;
-    chRegSetThreadName("drawgraph");
 
     gfont = gdispOpenFont("UI2");
     gwinSetDefaultFont(gfont);
@@ -85,12 +77,27 @@ static THD_FUNCTION(thdDraw, arg) {
   gwinClear(gc);
 }
 
+static THD_WORKING_AREA(waDraw, 256);
+/**
+ * @brief   Main Draw routine.
+ */
+static THD_FUNCTION(thdDraw, arg) {
+    (void)arg;
+    chRegSetThreadName("drawgraph");
+
+    while(1){
+        graph_empty();
+        gfxSleepMilliseconds(500);
+    }
+}
+
 /**
  * @brief   gui start function.
  */
 void m_gui_start(void){
     gdispSetOrientation(GDISP_ROTATE_90);
-    chThdCreateStatic(waDraw, sizeof(waDraw),	NORMALPRIO, thdDraw, NULL);
+    //chThdCreateStatic(waDraw, sizeof(waDraw),	NORMALPRIO, thdDraw, NULL);
+    m_graph_empty();
     gfxSleepMilliseconds(500);
 }
 /** @} */

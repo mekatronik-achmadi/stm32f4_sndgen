@@ -21,6 +21,7 @@
 
 #include "m_shell.h"
 #include "m_gui.h"
+#include "m_i2s.h"
 
 extern GHandle gc;
 
@@ -71,8 +72,11 @@ int main(void) {
 
     gwinPrintf(gc, "System ready \n");
 
+    m_i2s_start();
+
     while(true) {
         m_shell_term();
+        if (palReadPad(GPIOA, GPIOA_BUTTON)) i2sStopExchange(&I2SD2);
         gfxSleepMilliseconds(500);
     }
 }
