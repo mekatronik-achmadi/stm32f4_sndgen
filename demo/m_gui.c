@@ -7,13 +7,6 @@
  */
 
 #include "m_gui.h"
-#include "m_data.h"
-
-extern point disp_data[N_DISPDATA];
-extern u_int8_t play_stt;
-extern u_int8_t draw_stt;
-extern u_int16_t play_dur;
-extern u_int16_t dat_i;
 
 /**
  * @brief   overall graph object variable.
@@ -90,78 +83,6 @@ static THD_FUNCTION(thdDraw, arg) {
   gwinGraphDrawAxis(gh);
 
   gwinClear(gc);
-
-#if DRAW_MODE==0
-    uint16_t    i;
-
-    gwinGraphStartSet(gh);
-    gwinGraphDrawAxis(gh);
-
-    for(i = 0; i < gwinGetWidth(gh)*5*2; i++) {
-        gwinGraphDrawPoint(gh, i/5-gwinGetWidth(gh)/2, 20*sin(2*0.8*GFX_PI*i/180));
-    }
-    while(1);
-#endif
-
-#if DRAW_MODE==1
-    uint16_t    i;
-    while(true){
-        for(i = 0; i < N_DISPDATA; i++) {
-            gwinGraphDrawPoint(gh, disp_data[i].x, disp_data[i].y);
-        }
-    }
-#endif
-
-#if DRAW_MODE==2
-  while (true) {
-    gwinPrintf(gc, "Start to Play \n");
-
-    gwinGraphStartSet(gh);
-    gwinGraphDrawAxis(gh);
-    gwinGraphDrawPoints(gh, disp_data, sizeof(disp_data)/sizeof(disp_data[0]));
-
-    gfxSleepMilliseconds(DISP_DELAY);
-    gwinClear(gh);
-    gwinClear(gc);
-  }
-#endif
-
-#if DRAW_MODE==3
-  while(true){
-
-        if(draw_stt == 1){
-            gwinClear(gh);
-            gwinGraphStartSet(gh);
-            gwinGraphDrawAxis(gh);
-
-            m_data_disp();
-            gwinGraphDrawPoints(gh, disp_data, sizeof(disp_data)/sizeof(disp_data[0]));
-
-            draw_stt = 0;
-            play_stt = 1;
-        }
-
-        if(play_dur >= DURATION){
-            if(play_stt == 1){
-
-                play_stt = 0;
-                dat_i = 0;
-                m_data_zero();
-                m_dac_setV(0);
-
-                gwinClear(gh);
-                gwinGraphStartSet(gh);
-                gwinGraphDrawAxis(gh);
-
-                palClearPad(GPIOG,13);
-                gwinPrintf(gc, "Playing is over \n");
-            }
-        }
-
-        chThdSleepMicroseconds(1);
-  }
-#endif
-
 }
 
 /**

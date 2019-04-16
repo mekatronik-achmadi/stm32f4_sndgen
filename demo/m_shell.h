@@ -14,15 +14,12 @@
 
 #include "chprintf.h"
 #include "shell.h"
-#include "test.h"
 
 #include "math.h"
 #include "stdlib.h"
 #include "stdio.h"
 
 #include "usbcfg.h"
-
-#include "m_data.h"
 
 /**
  * @brief   shell thread size.
