@@ -36,7 +36,7 @@ endif
 
 DEMODIR =
 GFXINC +=
-GFXSRC +=   main.c shell.c usbcfg.c m_shell.c m_gui.c m_i2s.c
+GFXSRC +=   main.c shell.c usbcfg.c m_shell.c m_gui.c m_i2s.c m_exti.c
 
 ##############################################################################################
 # Set these for your project

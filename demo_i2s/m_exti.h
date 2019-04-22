@@ -1,13 +1,13 @@
 /**
- * @file   m_gui.h
- * @brief  GUI handler header
+ * @file   m_exti.h
+ * @brief  External interrupt handler header
  *
- * @addtogroup M_GUI
+ * @addtogroup M_IO
  * @{
  */
 
-#ifndef M_GUI_H
-#define M_GUI_H
+#ifndef M_EXTI_H
+#define M_EXTI_H
 
 #include "ch.h"
 #include "hal.h"
@@ -20,12 +20,13 @@
 #include "stdlib.h"
 #include "stdio.h"
 
+#include "usbcfg.h"
+
 #include "m_gui.h"
+#include "m_i2s.h"
 #include "m_shell.h"
 
-void m_gui_start(void);
-void m_gui_empty(void);
-void m_gui_sine(void);
+void m_exti_start(void);
 
-#endif // M_GUI_H
+#endif // M_EXTI_H
 /** @} */

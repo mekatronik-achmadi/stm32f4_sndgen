@@ -2,6 +2,8 @@ Makefile
 chconf.h
 gfxconf.h
 halconf.h
+m_exti.c
+m_exti.h
 m_gui.c
 m_gui.h
 m_i2s.c
