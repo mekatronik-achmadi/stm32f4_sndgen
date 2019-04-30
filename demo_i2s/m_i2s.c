@@ -58,11 +58,11 @@ static void i2scallback(I2SDriver *i2sp, size_t offset, size_t n) {
 void m_i2s_start(void){
 	uint16_t i;
 
-    //palSetPadMode(GPIOB, 12, PAL_MODE_ALTERNATE(5));
+    palSetPadMode(GPIOB, 12, PAL_MODE_ALTERNATE(5));
     palSetPadMode(GPIOB, 10, PAL_MODE_ALTERNATE(5));
     palSetPadMode(GPIOC, 3 , PAL_MODE_ALTERNATE(5));
 
     for(i=0;i<I2S_BUF_SIZE;i++){
-    	i2s_tx_buf[i]=0;
+        i2s_tx_buf[i]=sine_table[i];
     }
 }

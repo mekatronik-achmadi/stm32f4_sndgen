@@ -89,7 +89,7 @@ void m_gui_sine(void){
  * @brief   gui start function.
  */
 void m_gui_start(void){
-    gdispSetOrientation(GDISP_ROTATE_90);
+    gdispSetOrientation(GDISP_ROTATE_0);
 
     gfxSleepMilliseconds(500);
 

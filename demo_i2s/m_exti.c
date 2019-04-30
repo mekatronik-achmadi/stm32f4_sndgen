@@ -27,7 +27,10 @@ static THD_FUNCTION(thdRun1, arg) {
           m_i2s_start();
           i2sStart(&I2SD2, &i2scfg);
           i2sStartExchange(&I2SD2);
-          gfxSleepMilliseconds(1000);
+
+          run_stt=2;
+      }
+      if(run_stt==3){
           i2sStopExchange(&I2SD2);
           i2sStop(&I2SD2);
 
@@ -49,7 +52,7 @@ static void extPlayStart(EXTDriver *extp, expchannel_t channel){
     (void)extp;
     (void)channel;
 
-    run_stt = 1;
+    run_stt++;
 }
 
 /**
