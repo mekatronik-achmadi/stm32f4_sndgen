@@ -8,7 +8,7 @@
 #include "m_i2s.h"
 
 #define NUM_CHANNELS    2
-#define NUM_SAMPLES     512
+#define NUM_SAMPLES     1024
 #define SAMPLE_RATE     44100
 #define DEFAULT_FREQ    500
 
