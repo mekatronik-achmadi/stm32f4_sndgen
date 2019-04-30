@@ -8,6 +8,8 @@
 
 #include "m_shell.h"
 
+extern uint8_t run_stt;
+
 /*===========================================================================*/
 /* Command line commands                                                     */
 /*===========================================================================*/
@@ -62,6 +64,137 @@ static void cmd_threads(BaseSequentialStream *chp, int argc, char *argv[]) {
   } while (tp != NULL);
 }
 
+static void cmd_f200(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  (void)argv;
+  if (argc > 0) {
+    chprintf(chp, "Usage: f200\r\n");
+    return;
+  }
+
+  chprintf(chp, "Play Tone at 200\n");
+  run_stt=1;
+}
+
+static void cmd_f400(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  (void)argv;
+  if (argc > 0) {
+    chprintf(chp, "Usage: f400\r\n");
+    return;
+  }
+
+  chprintf(chp, "Play Tone at 400\n");
+  run_stt=3;
+}
+
+static void cmd_f600(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  (void)argv;
+  if (argc > 0) {
+    chprintf(chp, "Usage: f600\r\n");
+    return;
+  }
+
+  chprintf(chp, "Play Tone at 600\n");
+  run_stt=5;
+}
+
+static void cmd_f800(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  (void)argv;
+  if (argc > 0) {
+    chprintf(chp, "Usage: f800\r\n");
+    return;
+  }
+
+  chprintf(chp, "Play Tone at 800\n");
+  run_stt=7;
+}
+
+static void cmd_f1000(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  (void)argv;
+  if (argc > 0) {
+    chprintf(chp, "Usage: f200\r\n");
+    return;
+  }
+
+  chprintf(chp, "Play Tone at 1000\n");
+  run_stt=9;
+}
+
+static void cmd_f1200(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  (void)argv;
+  if (argc > 0) {
+    chprintf(chp, "Usage: f1200\r\n");
+    return;
+  }
+
+  chprintf(chp, "Play Tone at 1200\n");
+  run_stt=11;
+}
+
+static void cmd_f1400(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  (void)argv;
+  if (argc > 0) {
+    chprintf(chp, "Usage: f1400\r\n");
+    return;
+  }
+
+  chprintf(chp, "Play Tone at 1400\n");
+  run_stt=13;
+}
+
+static void cmd_f1600(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  (void)argv;
+  if (argc > 0) {
+    chprintf(chp, "Usage: f1600\r\n");
+    return;
+  }
+
+  chprintf(chp, "Play Tone at 1600\n");
+  run_stt=15;
+}
+
+static void cmd_f1800(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  (void)argv;
+  if (argc > 0) {
+    chprintf(chp, "Usage: f1800\r\n");
+    return;
+  }
+
+  chprintf(chp, "Play Tone at 1800\n");
+  run_stt=17;
+}
+
+static void cmd_f2000(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  (void)argv;
+  if (argc > 0) {
+    chprintf(chp, "Usage: f2000\r\n");
+    return;
+  }
+
+  chprintf(chp, "Play Tone at 2000\n");
+  run_stt=19;
+}
+
+static void cmd_stop(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  (void)argv;
+  if (argc > 0) {
+    chprintf(chp, "Usage: stop\r\n");
+    return;
+  }
+
+  run_stt=21;
+}
+
 /*===========================================================================*/
 /* Additional Command line commands                                          */
 /*===========================================================================*/
@@ -75,9 +208,20 @@ static void cmd_threads(BaseSequentialStream *chp, int argc, char *argv[]) {
  * @brief   commands enumeration.
  */
 static const ShellCommand commands[] = {
-  {"mem", cmd_mem},
-  {"threads", cmd_threads},
-  {NULL, NULL}
+    {"mem", cmd_mem},
+    {"threads", cmd_threads},
+    {"f200", cmd_f200},
+    {"f400", cmd_f400},
+    {"f600", cmd_f600},
+    {"f800", cmd_f800},
+    {"f1000", cmd_f1000},
+    {"f1200", cmd_f1200},
+    {"f1400", cmd_f1400},
+    {"f1600", cmd_f1600},
+    {"f1800", cmd_f1800},
+    {"f2000", cmd_f2000},
+    {"stop", cmd_stop},
+    {NULL, NULL}
 };
 
 /**

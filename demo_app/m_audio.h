@@ -7,8 +7,15 @@
 
 #include "m_i2s.h"
 
-#define I2S_BUF_SIZE            256
+#define NUM_CHANNELS    2
+#define NUM_SAMPLES     512
+#define SAMPLE_RATE     44100
+#define DEFAULT_FREQ    500
+
+//#define I2S_BUF_SIZE    256
+#define I2S_BUF_SIZE    NUM_SAMPLES*NUM_CHANNELS
 
 void m_audio_start(void);
+void m_audio_sine(double freq);
 
 #endif // M_AUDIO_H

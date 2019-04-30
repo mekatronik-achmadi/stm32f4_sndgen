@@ -1,11 +1,11 @@
 #include "m_i2s.h"
 
-extern uint16_t i2s_tx_buf[I2S_BUF_SIZE];
+extern uint16_t audio_sample[I2S_BUF_SIZE];
 
 static void i2scallback(I2SDriver *i2sp, size_t offset, size_t n);
 
 I2SConfig i2scfg = {
-  i2s_tx_buf,
+  audio_sample,
   NULL,
   I2S_BUF_SIZE,
   i2scallback,

@@ -20,6 +20,7 @@
 #include "stdio.h"
 
 #include "usbcfg.h"
+#include "m_audio.h"
 
 /**
  * @brief   shell thread size.
